@@ -2,12 +2,13 @@
   "name": "skill",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
   "scripts": {
-    "start": "ts-node ./index.ts",
-    "live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "run": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "npm run build"
   },
   "keywords": [],
   "author": "",
