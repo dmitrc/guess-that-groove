@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",
-    "build": "./node_modules/.bin/tsc -p",
+    "build": "./node_modules/.bin/tsc",
     "run": "nodemon --exec ./node_modules/.bin/ts-node -- ./app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "npm run build"
