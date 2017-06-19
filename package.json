@@ -5,10 +5,10 @@
   "main": "./dist/app.js",
   "scripts": {
     "start": "node ./dist/app.js",
-    "build": "./node_modules/.bin/tsc",
+    "build": "./node_modules/.bin/tsc -p",
     "run": "nodemon --exec ./node_modules/.bin/ts-node -- ./app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "npm run build"
+    "postinstall": "npm run build"
   },
   "keywords": [],
   "author": "Dmitrii Cucleschin",

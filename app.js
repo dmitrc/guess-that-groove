@@ -1,0 +1,1 @@
+/* Need this dummy file to make Azure deployment script happy */
