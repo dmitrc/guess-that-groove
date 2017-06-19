@@ -5,18 +5,17 @@
   "main": "./dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc",
+    "build": "./node_modules/.bin/tsc",
     "run": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "npm run build"
   },
   "keywords": [],
-  "author": "",
+  "author": "Dmitrii Cucleschin",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.11.0",
-    "ts-node": "^3.0.6",
-    "typescript": "^2.3.4"
+    "ts-node": "^3.0.6"
   },
   "dependencies": {
     "@types/node": "^7.0.31",
@@ -26,6 +25,7 @@
     "dotenv-extended": "^2.0.1",
     "node-emoji": "^1.5.1",
     "restify": "^4.3.0",
-    "ssml-builder": "^0.2.3"
+    "ssml-builder": "^0.2.3",
+    "typescript": "^2.3.4"
   }
 }
