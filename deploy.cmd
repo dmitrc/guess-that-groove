@@ -88,10 +88,11 @@ goto :EOF
 :Deployment
 echo Handling node.js deployment.
 
-:: 0. Before KuduSync starts, add dummy server files so that it doesn't complain about their existence
-echo Creating dummy app: 'dist\app.js'...
-call :ExecuteCmd mkdir dist
-call :ExecuteCmd touch dist\app.js
+echo Installing TypeScript...
+call :ExecuteCmd !NPM_CMD! install -g typescript
+
+echo Transpiling TypeScript in %DEPLOYMENT_SOURCE%...
+call :ExecuteCmd tsc -p "%DEPLOYMENT_SOURCE%"
 
 :: 1. KuduSync
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
@@ -109,10 +110,6 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
-
-:: 4\. Compile TypeScript
-echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
-call :ExecuteCmd node %DEPLOYMENT_TARGET%\node_modules\typescript\bin\tsc -p "%DEPLOYMENT_TARGET%"
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 goto end
