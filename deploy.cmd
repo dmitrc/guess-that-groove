@@ -89,7 +89,7 @@ goto :EOF
 echo Handling node.js deployment.
 
 echo Installing TypeScript...
-call :ExecuteCmd !NPM_CMD! install -g typescript
+call :ExecuteCmd npm install -g typescript
 
 echo Transpiling TypeScript in %DEPLOYMENT_SOURCE%...
 call :ExecuteCmd tsc -p "%DEPLOYMENT_SOURCE%"
