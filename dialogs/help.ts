@@ -36,7 +36,7 @@ let helpDialog = (session: builder.Session, args: any) => {
   commands.forEach((cmd) => {
     description += `- *${cmd}*${util.br()}`;
 
-    speech.pause('100ms');
+    speech.pause('250ms');
     speech.say(cmd);
   });
 
