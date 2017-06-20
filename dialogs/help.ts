@@ -8,9 +8,7 @@ let helpDialog = (session: builder.Session, args: any) => {
   let title = 'What can I do?';
   let description = '';
   let speech = new ssml();
-  let commands = [ 
-    'show me image of the day (from 5 days ago)', 
-    'quiz (from yesterday)', 
+  let commands = [
     'about this bot', 
     'submit feedback'
   ];
@@ -34,9 +32,9 @@ let helpDialog = (session: builder.Session, args: any) => {
   speech.s('Try saying one of the following commands:');
 
   commands.forEach((cmd) => {
-    description += `- *${cmd}*${util.br()}`;
+    description += `- ${cmd}${util.br()}`;
 
-    speech.pause('250ms');
+    speech.pause('300ms');
     speech.say(cmd);
   });
 

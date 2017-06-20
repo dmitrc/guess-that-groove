@@ -18,6 +18,8 @@ let feedbackDialog = [
   },
   (session: builder.Session, results: builder.IPromptTextResult) => {
       let res = results.response || '';
+
+      // TODO: Upload feedback to the Azure Table Storage
       
       let title = 'Thank you!';
       let description = `Your feedback was recorded and will be reviewed in the soonest time.${util.br()}I appreciate you taking your time to improve this skill!`;

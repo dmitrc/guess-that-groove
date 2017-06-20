@@ -25,18 +25,8 @@ var bot = new builder.UniversalBot(connector, (session) => {
     session.replaceDialog('HelpDialog', { isFallback: true });
 });
 
-var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
-bot.recognizer(recognizer);
-
-bot.dialog('ImageDialog', debugDialog)
-.triggerAction({
-    matches: 'HomepageImageIntent'
-});
-
-bot.dialog('QuizDialog', debugDialog)
-.triggerAction({
-    matches: 'HomepageQuizIntent'
-});
+// var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
+// bot.recognizer(recognizer);
 
 bot.dialog('HelpDialog', helpDialog)
 .triggerAction({
@@ -49,7 +39,7 @@ bot.dialog('HelpDialog', helpDialog)
 bot.dialog('AboutDialog', aboutDialog)
 .triggerAction({
     matches: [
-        /about/i,
+        /about this/i,
         /author/i,
         /contact/i,
         /created/i

@@ -6,10 +6,10 @@ import ssml from '../ssml';
 
 let debugDialog = (session: builder.Session, args: any) => {
   let title = "Debug output";
-  let description = `#### Args dump:${util.br()}${JSON.stringify(args)}`;
+  let description = `#### Args:${util.br()}${JSON.stringify(args)}`;
 
   let speech = new ssml();
-  speech.say('I have obtained the full dump of the arguments object! I am displaying it for you on the companion app.');
+  speech.say('I am in the debug mode. Contents of the arguments object have been saved and can be previewed in the companion app.');
 
   let msg = new builder.Message(session)
       .text(util.formatCard(title, description))

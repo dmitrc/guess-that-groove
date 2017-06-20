@@ -47,6 +47,11 @@ export default class SsmlBuilder {
     }
 
     audio(src: string, text: string = ''): SsmlBuilder {
+      // Requirements for the audio file:
+      // * mp3 format (MPEG2)
+      // * downsampled to 48 kbps, 16000 Hz
+      // * hosted on trusted https:// endpoint
+      // * total duration of text-to-speech + audio clip is no more than 90 seconds
       this.elements.push(`<audio src="${src}">${text}</audio>`);
       return this;
     }
