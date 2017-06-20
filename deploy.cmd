@@ -88,11 +88,9 @@ goto :EOF
 :Deployment
 echo Handling node.js deployment.
 
-echo Installing TypeScript...
-call :ExecuteCmd npm install -g typescript
-
-echo Transpiling TypeScript in %DEPLOYMENT_SOURCE%...
-call :ExecuteCmd tsc -p "%DEPLOYMENT_SOURCE%"
+echo Create dummy 'dist\app.js'...
+call :ExecuteCmd mkdir "%DEPLOYMENT_SOURCE%\dist"
+call :ExecuteCmd copy NUL "%DEPLOYMENT_SOURCE%\dist\app.js"
 
 :: 1. KuduSync
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
@@ -110,6 +108,12 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
+
+echo Installing TypeScript...
+call :ExecuteCmd npm install -g typescript
+
+echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
+call :ExecuteCmd tsc -p "%DEPLOYMENT_TARGET%"
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 goto end

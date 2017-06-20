@@ -14,7 +14,8 @@
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.11.0",
-    "ts-node": "^3.0.6"
+    "ts-node": "^3.0.6",
+    "typescript": "^2.3.4"
   },
   "dependencies": {
     "@types/node": "^7.0.31",
@@ -24,7 +25,6 @@
     "dotenv-extended": "^2.0.1",
     "node-emoji": "^1.5.1",
     "restify": "^4.3.0",
-    "ssml-builder": "^0.2.3",
-    "typescript": "^2.3.4"
+    "ssml-builder": "^0.2.3"
   }
 }
