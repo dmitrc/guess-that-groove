@@ -9,7 +9,8 @@ let aboutDialog = (session: builder.Session) => {
     let description = `Made with ${emoji.get('heart')} by **Dmitrii Cucleschin**.${util.br(2)}${emoji.get('earth_americas')} [https://dmitrii.it](https://dmitrii.it)${util.br()}${emoji.get('email')} [dmitrii.cucleschin@gmail.com](mailto:dmitrii.cucleschin@gmail.com)${util.br(2)}*No digital assistants were harmed in making of this bot.*`;
 
     let speech = new Speech();
-    speech.say('This bot was made with love by Dmeetree Kooklyeshkeen');
+    speech.say('This bot was made with love by');
+    speech.phoneme('ipa', `dmi'tɹɪj kʊkljɛ'ʃkin`, 'Dmitrii Cucleschin');
     speech.pause("300ms");
     speech.prosody({ volume: "soft", rate: "fast" }, 'No digital assistants were harmed in making of this bot.');
 
