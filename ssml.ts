@@ -88,8 +88,8 @@ export default class SsmlBuilder {
       if (options.range) {
         elem += ` range="${options.range}"`;
       }
-      if (options.range) {
-        elem += ` volume="${options.range}"`;
+      if (options.volume) {
+        elem += ` volume="${options.volume}"`;
       }
       elem += `>${text}</prosody>`;
       this.elements.push(elem);
