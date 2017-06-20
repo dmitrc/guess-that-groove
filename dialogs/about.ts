@@ -10,7 +10,8 @@ let aboutDialog = (session: builder.Session) => {
 
     let speech = new ssml();
     speech.say('This bot was made with love by');
-    speech.phoneme('ipa', `dmi'tɹɪj kʊkljɛ'ʃkin`, 'Dmitrii Cucleschin');
+    speech.say('Dmeetree Kooklyeshkeen'); // LOL
+    // Debug the characters: speech.phoneme('ipa', `dmi'tɹɪj kʊkljɛ'ʃkin`, 'Dmitrii Cucleschin');
     speech.pause('500ms');
     speech.prosody('No digital assistants were harmed in making of this bot.', { volume: 'soft', rate: 'fast' });
 
