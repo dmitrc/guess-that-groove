@@ -89,8 +89,8 @@ goto :EOF
 echo Handling node.js deployment.
 
 :: 0. Before KuduSync starts, add dummy server files so that it doesn't complain about their existence
-call :ExecuteCmd "mkdir %DEPLOYMENT_SOURCE%\dist"
-call :ExecuteCmd "touch %DEPLOYMENT_SOURCE%\dist\app.js"
+call :ExecuteCmd "mkdir dist"
+call :ExecuteCmd "touch dist\app.js"
 
 :: 1. KuduSync
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
