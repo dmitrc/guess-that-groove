@@ -89,7 +89,7 @@ goto :EOF
 echo Handling node.js deployment.
 
 :: 0. Before KuduSync starts, add dummy server files so that it doesn't complain about their existence
-echo Creating dummy dist\app.js...
+echo Creating dummy app: 'dist\app.js'...
 call :ExecuteCmd mkdir dist
 call :ExecuteCmd touch dist\app.js
 
