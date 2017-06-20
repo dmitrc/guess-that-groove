@@ -1,7 +1,7 @@
 {
-  "name": "skill",
+  "name": "cortana-skill",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple seed project for a Cortana Skill based on Bot Framework",
   "main": "dist/app.js",
   "scripts": {
     "start": "node dist/app.js",
@@ -9,8 +9,17 @@
     "run": "./node_modules/.bin/nodemon --exec ./node_modules/.bin/ts-node -- ./app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "Dmitrii Cucleschin",
+  "keywords": [
+    "typescript",
+    "bot",
+    "botbuilder",
+    "Bot Framework",
+    "LUIS",
+    "AI",
+    "cortana",
+    "Cortana Skills Kit"
+  ],
+  "author": "dmitryfd <dmitrii.cucleschin@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.11.0",
@@ -24,7 +33,6 @@
     "botbuilder": "^3.8.4",
     "dotenv-extended": "^2.0.1",
     "node-emoji": "^1.5.1",
-    "restify": "^4.3.0",
-    "ssml-builder": "^0.2.3"
+    "restify": "^4.3.0"
   }
 }

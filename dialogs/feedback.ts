@@ -2,15 +2,18 @@ import * as builder from 'botbuilder';
 import * as emoji from 'node-emoji';
 
 import * as util from '../util';
-var Speech = require('ssml-builder');
+import ssml from '../ssml';
 
 let feedbackDialog = [
   (session: builder.Session) => {
       let title = 'Submit feedback';
       let description = `How would you rate your experience with this bot?`;
 
+      let speech = new ssml();
+      speech.say(description);
+
       builder.Prompts.text(session, util.formatCard(title, description), {
-          speak: description
+          speak: speech.ssml()
       });
   },
   (session: builder.Session, results: builder.IPromptTextResult) => {
@@ -18,10 +21,13 @@ let feedbackDialog = [
       
       let title = 'Thank you!';
       let description = `Your feedback was recorded and will be reviewed in the soonest time.${util.br()}I appreciate you taking your time to improve this skill!`;
+      
+      let speech = new ssml();
+      speech.say(description);
 
       let msg = new builder.Message(session)
           .text(util.formatCard(title, description))
-          .speak(description);
+          .speak(speech.ssml());
 
       session.send(msg).endDialog();
   }

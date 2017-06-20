@@ -2,15 +2,15 @@ import * as builder from 'botbuilder';
 import * as emoji from 'node-emoji';
 
 import * as util from '../util';
-var Speech = require('ssml-builder');
+import ssml from '../ssml';
 
 let helpDialog = (session: builder.Session, args: any) => {
   let title = 'What can I do?';
   let description = '';
-  let speech = new Speech();
+  let speech = new ssml();
   let commands = [ 
     'show me image of the day (from 5 days ago)', 
-    'play quiz (from yesterday)', 
+    'quiz (from yesterday)', 
     'about this bot', 
     'submit feedback'
   ];
@@ -22,16 +22,16 @@ let helpDialog = (session: builder.Session, args: any) => {
     let msg = session.message && session.message.text;
     if (msg) {
       description += `I didn't understand what do you mean by :${util.br()}" *${msg}* "${util.br(2)}`;
-      speech.sentence('I didn\'t understand what do you mean.');
+      speech.s('I didn\'t understand what do you mean.');
     }
     else {
       description += `I didn't hear you ask anything.${util.br(2)}`;
-      speech.sentence('I didn\'t hear you ask anything.');
+      speech.s('I didn\'t hear you ask anything.');
     }
   }
 
   description += `**Try saying one of the following commands:**${util.br(2)}`;
-  speech.sentence('Try saying one of the following commands:');
+  speech.s('Try saying one of the following commands:');
 
   commands.forEach((cmd) => {
     description += `- *${cmd}*${util.br()}`;
@@ -42,7 +42,7 @@ let helpDialog = (session: builder.Session, args: any) => {
 
   let msg = new builder.Message(session)
       .text(util.formatCard(title, description))
-      .speak(util.ssml(speech))
+      .speak(speech.ssml())
       .inputHint(builder.InputHint.acceptingInput);
 
   session.send(msg).endDialog();
