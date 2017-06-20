@@ -89,7 +89,9 @@ goto :EOF
 echo Handling node.js deployment.
 
 echo Create dummy 'dist\app.js'...
-call :ExecuteCmd mkdir "%DEPLOYMENT_SOURCE%\dist"
+IF NOT EXIST "%DEPLOYMENT_SOURCE%\dist" (
+  call :ExecuteCmd mkdir "%DEPLOYMENT_SOURCE%\dist"
+)
 call :ExecuteCmd copy NUL "%DEPLOYMENT_SOURCE%\dist\app.js"
 
 :: 1. KuduSync
@@ -109,11 +111,23 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   popd
 )
 
+:: 4. Install TypeScript compiler and transpile to js
 echo Installing TypeScript...
 call :ExecuteCmd npm install -g typescript
 
 echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
 call :ExecuteCmd tsc -p "%DEPLOYMENT_TARGET%"
+
+:: 4. Copy env files so that paths are valid
+echo Copying environment variables to %DEPLOYMENT_TARGET%\dist...
+IF EXIST "%DEPLOYMENT_TARGET%\.env.defaults" (
+  call :ExecuteCmd cp "%DEPLOYMENT_TARGET%\.env.defaults" "%DEPLOYMENT_TARGET%\dist\.env"
+)
+IF EXIST "%DEPLOYMENT_TARGET%\.env" (
+  call :ExecuteCmd cp "%DEPLOYMENT_TARGET%\.env" "%DEPLOYMENT_TARGET%\dist\.env"
+)
+
+echo Everything ready to start!
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 goto end
