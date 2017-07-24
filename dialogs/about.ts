@@ -6,11 +6,10 @@ import ssml from '../ssml';
 
 let aboutDialog = (session: builder.Session) => {
     let title = 'About this bot';
-    let description = `Made with ${emoji.get('heart')} by **Dmitrii Cucleschin**.${util.br(2)}${emoji.get('earth_americas')} [https://dmitrii.it](https://dmitrii.it)${util.br()}${emoji.get('email')} [dmitrii.cucleschin@gmail.com](mailto:dmitrii.cucleschin@gmail.com)${util.br(2)}*No digital assistants were harmed in making of this bot.*`;
+    let description = `Made with ${emoji.get('heart')} by **Team Caribou**.${util.br(2)}*No digital assistants were harmed in making of this bot.*`;
 
     let speech = new ssml();
-    speech.say('This bot was made with love by');
-    speech.say('Dmitry Kukleshkin');
+    speech.say('This bot was made with love by Team Caribou.');
     speech.pause('500ms');
     speech.prosody('No digital assistants were harmed in making of this bot.', { volume: 'soft', rate: 'fast' });
 

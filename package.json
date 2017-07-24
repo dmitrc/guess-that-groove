@@ -1,12 +1,12 @@
 {
-  "name": "cortana-skill",
+  "name": "guess-that-groove",
   "version": "1.0.0",
-  "description": "A simple seed project for a Cortana Skill based on Bot Framework",
+  "description": "Song and lyric guessing game for Cortana and other channels",
   "main": "dist/app.js",
   "scripts": {
     "start": "node dist/app.js",
     "build": "./node_modules/.bin/tsc",
-    "run": "./node_modules/.bin/nodemon --exec ./node_modules/.bin/ts-node -- ./app.ts",
+    "run": "./node_modules/.bin/nodemon --exec ts-node -- ./app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,7 +19,7 @@
     "cortana",
     "Cortana Skills Kit"
   ],
-  "author": "dmitryfd <dmitrii.cucleschin@gmail.com>",
+  "author": "Team Caribou <hpdev@>",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.11.0",
