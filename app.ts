@@ -3,9 +3,12 @@ import * as builder from 'botbuilder';
 import * as restify from 'restify';
 
 import debugDialog from './dialogs/debug';
+import gameDialog from './dialogs/game';
 import helpDialog from './dialogs/help';
 import aboutDialog from './dialogs/about';
 import feedbackDialog from './dialogs/feedback';
+
+import * as serverFunc from './server';
 
 dotenv.load();
 
@@ -21,6 +24,8 @@ var connector = new builder.ChatConnector({
 
 server.post('/api/messages', connector.listen());
 
+server.get('/api/song', serverFunc.getSong);
+
 var bot = new builder.UniversalBot(connector, (session) => {
     //session.replaceDialog('HelpDialog', { isFallback: true });
     session.replaceDialog('DebugDialog');
@@ -28,6 +33,13 @@ var bot = new builder.UniversalBot(connector, (session) => {
 
 // var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 // bot.recognizer(recognizer);
+
+bot.dialog('GameDialog', gameDialog)
+.triggerAction({
+    matches: [
+        /game/i
+    ]
+});
 
 bot.dialog('HelpDialog', helpDialog)
 .triggerAction({
