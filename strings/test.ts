@@ -25,7 +25,7 @@ strings.IntroduceClipN = function(n: number){
         5: "fifth"
     }; 
     let speech = new ssml();
-    speech.say(`Here is the ${dict(n)} clip`);
+    speech.say(`Here is the ${dict[n]} clip`);
     return speech.toString();
 }
 
