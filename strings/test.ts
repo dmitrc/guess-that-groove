@@ -106,7 +106,7 @@ strings.TheAnswer = function(artist: any, title: any){
 //
 
 // you got <n> points
-strings.PointsReadout = function(n: points){
+strings.PointsReadout = function(points: number){
     let dict: any = {
         0: "Try cleaning the wax out of your ears!",
         1: "At least you got on the board.",
@@ -123,9 +123,11 @@ strings.PointsReadout = function(n: points){
         12: "That's a perfect score! You're a real audiophile."
     }; 
     let speech = new ssml();
-    speech.say(`That's all the clips. You earned ${n} points. ${dict[n]}`)
+    speech.say(`That's all the clips. You earned ${points} points. ${dict[points]}`)
     return speech.toString();
 }
 
-strings.demo = strings.Intro;
+strings.demo = new ssml()
+                .audio("https://guessthatgroove.blob.core.windows.net/songs/1960s%20Byrds%20-%20Mr.%20Tambourine%20Man.mp3")
+                .toString();
 export default strings;
