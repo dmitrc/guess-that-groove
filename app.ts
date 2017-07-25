@@ -4,6 +4,8 @@ import * as restify from 'restify';
 
 import debugDialog from './dialogs/debug';
 import gameDialog from './dialogs/game';
+import roundDialog from './dialogs/round';
+import hintDialog from './dialogs/hint';
 import helpDialog from './dialogs/help';
 import aboutDialog from './dialogs/about';
 import feedbackDialog from './dialogs/feedback';
@@ -44,6 +46,10 @@ bot.dialog('GameDialog', gameDialog)
         /game/i
     ]
 });
+
+bot.dialog('RoundDialog', roundDialog);
+
+bot.dialog('HintDialog', hintDialog);
 
 bot.dialog('HelpDialog', helpDialog)
 .triggerAction({
