@@ -31,7 +31,7 @@ let roundDialog = [
             let msg = new builder.Message(session)
                 .text(util.formatCard(title, description))
                 //.speak(speech.ssml())
-                .inputHint(builder.InputHint.expectingInput);
+                .inputHint(builder.InputHint.ignoringInput);
 
             session.send(msg);
             

@@ -13,7 +13,7 @@ let gameDialog =
         let msg = new builder.Message(session)
             .text(util.formatCard(title, description))
             //.speak(speech.ssml())
-            .inputHint(builder.InputHint.expectingInput);
+            .inputHint(builder.InputHint.ignoringInput);
 
         session.send(msg);
         session.beginDialog('RoundDialog', { step: 1, score: 0, total: 5 });
@@ -31,7 +31,7 @@ let gameDialog =
         let msg = new builder.Message(session)
             .text(util.formatCard(title, description))
             //.speak(speech.ssml())
-            .inputHint(builder.InputHint.expectingInput);
+            .inputHint(builder.InputHint.acceptingInput);
 
         session.send(msg).endDialog();
     }
