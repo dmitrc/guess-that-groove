@@ -4,55 +4,37 @@ import * as emoji from 'node-emoji';
 import * as util from '../util';
 import ssml from '../ssml';
 
-let stepCount = 3;
-let gameDialog = [
-        (session: builder.Session, args: any) => {
-            if (args && args.step) {
-                session.dialogData.step = args.step;
-            }
-            else {
-                session.dialogData.step = 1;
-                session.conversationData.score = 0;
-            }
+let gameDialog = 
+[
+    (session: builder.Session) => {
+        let title = `Welcome!`;
+        let description = 'Rules of the game go here...';
 
-            let title = `Round ${session.dialogData.step}`;
-            let description = 'Please listen to this round\'s song';
+        let msg = new builder.Message(session)
+            .text(util.formatCard(title, description))
+            //.speak(speech.ssml())
+            .inputHint(builder.InputHint.expectingInput);
 
-            let msg = new builder.Message(session)
-                .text(util.formatCard(title, description))
-                //.speak(speech.ssml())
-                .inputHint(builder.InputHint.expectingInput);
-
-            builder.Prompts.text(session, msg);
-        },
-        (session: builder.Session, results: builder.IPromptTextResult) => {
-            let title = `Round ${session.dialogData.step} results`;
-            let description = `Your answer was ${results.response}`;
-
-            let msg = new builder.Message(session)
-                .text(util.formatCard(title, description))
-                //.speak(speech.ssml())
-                .inputHint(builder.InputHint.expectingInput);
-
-            session.send(msg);
-            session.conversationData.score += 1;
-
-            if (session.dialogData.step < stepCount) {
-                session.replaceDialog('GameDialog', { step: session.dialogData.step + 1 })
-            }
-            else {
-                let title = `Results`;
-                let description = `Your score was ${session.conversationData.score}`;
-
-                let msg = new builder.Message(session)
-                    .text(util.formatCard(title, description))
-                    //.speak(speech.ssml())
-                    .inputHint(builder.InputHint.expectingInput);
-
-                session.send(msg).endDialog();
-            }
+        session.send(msg);
+        session.beginDialog('RoundDialog', { step: 1, score: 0, total: 5 });
+    },
+    (session: builder.Session, results: builder.IPromptResult<any> | undefined) => {
+        if (!results || !results.response) {
+            //something is wrong
+            session.send("Oops, something is very wrong here").endDialog();
+            return;
         }
-    ];
 
+        let title = `Final results`;
+        let description = `After ${results.response.turn} turns, your score is ${results.response.score}`;
+
+        let msg = new builder.Message(session)
+            .text(util.formatCard(title, description))
+            //.speak(speech.ssml())
+            .inputHint(builder.InputHint.expectingInput);
+
+        session.send(msg).endDialog();
+    }
+];
 
 export default gameDialog;
