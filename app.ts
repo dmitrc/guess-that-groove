@@ -45,11 +45,39 @@ bot.dialog('GameDialog', gameDialog)
     matches: [
         /game/i
     ]
+})
+.endConversationAction('endConversationAction', 'Exiting the game...', {
+    matches: [
+        /exit/i,
+        /cancel/i,
+        /goodbye/i
+    ],
+    confirmPrompt: "This will cancel your current progress. Are you sure?"
 });
 
-bot.dialog('RoundDialog', roundDialog);
+bot.dialog('RoundDialog', roundDialog)
+.reloadAction('reloadAction', 'Sure thing, I will repeat one more time...', {
+    matches: [
+        /repeat/i,
+        /restart/i,
+        /start over/i,
+        /try again/i
+    ]
+});
 
-bot.dialog('HintDialog', hintDialog);
+bot.dialog('HintDialog', hintDialog)
+.triggerAction({
+    matches: [
+        /hint/i,
+        /clue/i
+    ],
+    onSelectAction: (session, args, next) => {
+        // Add the hint dialog to the dialog stack 
+        // (override the default behavior of replacing the stack)
+        let dialog = (args && args.action) || 'HintDialog';
+        session.beginDialog(dialog, args);
+    }
+});
 
 bot.dialog('HelpDialog', helpDialog)
 .triggerAction({
