@@ -3,7 +3,11 @@ import ssml from '../ssml';
 
 let strings: any = {};
 
-strings.intro = new ssml();
-strings.intro.say("Hello!");
+strings.demo =
+    new ssml()
+    .say("Hello!")
+    .pause("330ms")
+    .say("How are you doing?")
+    .toString();
 
 export default strings;
