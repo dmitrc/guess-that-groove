@@ -89,17 +89,43 @@ strings.Hint = function(artist: any){
 }
 
 // If the user says "Again" or "Play it again"
+strings.CorrectTitleIncorrectArtist=
+    new ssml()
+    .say("Here's it is again.")
+    .toString();
 
-// If the user says "I don't know" or "I give up"
-
-// Give them the answer (If they get it totally wrong or give up)
+// If the user says "I don't know" or "I give up". Just give them the answer. 
+strings.TheAnswer = function(artist: any, title: any){
+    return new ssml()
+    .say(`That was ${title} by ${artist}.`)
+    .toString();
+}
 
 //
 // End of game 
 //
 
 // you got <n> points
-
+strings.PointsReadout = function(n: points){
+    let dict: any = {
+        0: "Try cleaning the wax out of your ears!",
+        1: "At least you got on the board.",
+        2: "The important thing is, you showed up.",
+        3: "Nice hustle!",
+        4: "Keep practicing!",
+        5: "Not so bad.",
+        6: "You might be a contender.",
+        7: "Not too shabby.",
+        8: "You've got potential!",
+        9: "That's impressive!",
+        10: "You're ready for the next level!",
+        11: "Just 1 short of perfection!",
+        12: "That's a perfect score! You're a real audiophile."
+    }; 
+    let speech = new ssml();
+    speech.say(`That's all the clips. You earned ${n} points. ${dict[n]}`)
+    return speech.toString();
+}
 
 strings.demo = strings.Intro;
 export default strings;
