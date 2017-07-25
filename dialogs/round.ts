@@ -35,7 +35,7 @@ let roundDialog = [
 
             session.send(msg);
             
-            if (session.conversationData.round < session.conversationData.total) {
+            if (session.conversationData.step < session.conversationData.total) {
                 session.replaceDialog('RoundDialog', {
                     step: ++session.conversationData.step,
                     score: ++session.conversationData.score,
