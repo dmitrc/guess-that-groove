@@ -82,10 +82,11 @@ strings.CorrectTitleIncorrectArtist=
     .toString();
 
 // If the usre asks for a hint ("Hint" or "Give me a hint")
-strings.Hint function(artist: any)=
-    new ssml()
+strings.Hint = function(artist: any){
+    return new ssml()
     .say(`Sure, I'll get you half way there. The Artist is ${artist}. Now can you guess the title?`)
     .toString();
+}
 
 // If the user says "Again" or "Play it again"
 
