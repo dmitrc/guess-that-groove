@@ -10,7 +10,7 @@ let hintDialog = (session: builder.Session, args: any) => {
 
     let msg = new builder.Message(session)
         .text(util.formatCard(title, description))
-        //.speak(speech.ssml())
+        .speak('Here is your hint')
         .inputHint(builder.InputHint.ignoringInput);
 
     session.send(msg).endDialog();

@@ -39,6 +39,15 @@ var bot = new builder.UniversalBot(connector, (session) => {
 
 // var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 // bot.recognizer(recognizer);
+let cancelMsg = new builder.Message()
+    .text('Exiting the game...')
+    .speak('Exiting the game')
+    .inputHint(builder.InputHint.ignoringInput);
+
+let confirmMsg = new builder.Message()
+    .text('This will cancel your current progress. Are you sure?')
+    .speak('This will cancel your current progress. Are you sure?')
+    .inputHint(builder.InputHint.ignoringInput);
 
 bot.dialog('GameDialog', gameDialog)
 .triggerAction({
@@ -46,17 +55,22 @@ bot.dialog('GameDialog', gameDialog)
         /game/i
     ]
 })
-.endConversationAction('endConversationAction', 'Exiting the game...', {
+.endConversationAction('endConversationAction', cancelMsg, {
     matches: [
         /exit/i,
         /cancel/i,
         /goodbye/i
     ],
-    confirmPrompt: "This will cancel your current progress. Are you sure?"
+    confirmPrompt: confirmMsg
 });
 
+let repeatMsg = new builder.Message()
+    .text('Sure thing, I will repeat one more time...')
+    .speak('Sure thing, I will repeat one more time...')
+    .inputHint(builder.InputHint.ignoringInput);
+
 bot.dialog('RoundDialog', roundDialog)
-.reloadAction('reloadAction', 'Sure thing, I will repeat one more time...', {
+.reloadAction('reloadAction', repeatMsg, {
     matches: [
         /repeat/i,
         /restart/i,
