@@ -26,7 +26,8 @@ server.post('/api/messages', connector.listen());
 server.get('/api/song', serverFunc.getSong);
 
 var bot = new builder.UniversalBot(connector, (session) => {
-    session.replaceDialog('HelpDialog', { isFallback: true });
+    //session.replaceDialog('HelpDialog', { isFallback: true });
+    session.replaceDialog('DebugDialog');
 });
 
 // var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
@@ -55,5 +56,12 @@ bot.dialog('FeedbackDialog', feedbackDialog)
     matches: [
         /feedback/i,
         /review/i
+    ]
+});
+
+bot.dialog('DebugDialog', debugDialog)
+.triggerAction({
+    matches: [
+        /debug/i
     ]
 });

@@ -4,16 +4,17 @@ import * as emoji from 'node-emoji';
 import * as util from '../util';
 import ssml from '../ssml';
 
-let debugDialog = (session: builder.Session, args: any) => {
-  let title = "Debug output";
-  let description = `#### Args:${util.br()}${JSON.stringify(args)}`;
+import testStrings from '../strings/test';
 
-  let speech = new ssml();
-  speech.say('I am in the debug mode. Contents of the arguments object have been saved and can be previewed in the companion app.');
+let debugDialog = (session: builder.Session) => {
+  let speech = testStrings.demo;
+
+  let title = "Debug output";
+  let description = `#### Raw:${util.br()}${speech}`;
 
   let msg = new builder.Message(session)
       .text(util.formatCard(title, description))
-      .speak(speech.ssml())
+      .speak(speech)
       .inputHint(builder.InputHint.acceptingInput);
 
   session.send(msg).endDialog();
