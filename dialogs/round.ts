@@ -6,11 +6,14 @@ import ssml from '../ssml';
 
 let roundDialog = [
         (session: builder.Session, args: any) => {
-            if (args) {
-                session.conversationData.step = args.step || 1;
-                session.conversationData.score = args.score || 0;
-                session.conversationData.total = args.total || 5;
+            if (args && !args.inProgress) {
+                session.conversationData.step = 0;
+                session.conversationData.score = 0;
+                session.conversationData.total = 5;
             }
+
+            // Increment the turn before starting
+            ++session.conversationData.step;
 
             let title = `Round ${session.conversationData.step}`;
             let description = 'Please listen to this round\'s song... What is your guess?';
@@ -23,7 +26,8 @@ let roundDialog = [
             builder.Prompts.text(session, msg);
         },
         (session: builder.Session, results: builder.IPromptTextResult) => {
-            session.conversationData.score += 1;
+            // Insert some logic here
+            ++session.conversationData.score;
 
             let title = `Round ${session.conversationData.step} results`;
             let description = `Your answer was ${results.response}. Your score is ${session.conversationData.score}`;
@@ -37,17 +41,14 @@ let roundDialog = [
             
             if (session.conversationData.step < session.conversationData.total) {
                 session.replaceDialog('RoundDialog', {
-                    step: ++session.conversationData.step,
-                    score: ++session.conversationData.score,
-                    total: session.conversationData.total
+                    inProgress: true
                 });
             }
             else {
                 session.endDialogWithResult({
                     response: {
-                        step: session.conversationData.step,
-                        answer: results.response,
-                        score: session.conversationData.score 
+                        score: session.conversationData.score,
+                        total: session.conversationData.total
                     }
                 });
             }
