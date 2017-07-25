@@ -12,7 +12,7 @@ let gameDialog =
 
         let msg = new builder.Message(session)
             .text(util.formatCard(title, description))
-            //.speak(speech.ssml())
+            .speak(description)
             .inputHint(builder.InputHint.ignoringInput);
 
         session.send(msg);
@@ -30,7 +30,7 @@ let gameDialog =
 
         let msg = new builder.Message(session)
             .text(util.formatCard(title, description))
-            //.speak(speech.ssml())
+            .speak(description)
             .inputHint(builder.InputHint.acceptingInput);
 
         session.send(msg).endDialog();
