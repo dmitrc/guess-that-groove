@@ -3,20 +3,6 @@ import ssml from '../ssml';
 
 let strings: any = {};
 
-strings.sage =
-    new ssml()
-    .say("Hello!")
-    .pause("330ms")
-    .say("How are you doing?")
-    .toString();
-
-strings.sage2 =
-    new ssml()
-    .say("What do you want for dinner?")
-    .pause("330ms")
-    .say("I would like chinese")
-    .toString();
-
 // Start of Game stuff
 strings.Intro =
     new ssml()
@@ -25,10 +11,28 @@ strings.Intro =
     .say("Try to guess the following five Songs. You get one point for the artist or title, and three points if you get both. Let's begin!")
     .toString();
 
+// Pick a decade
+// Pick an artist
+
+
 // Cortana says these before playing a clip
-strings.PreClip1 =
+strings.IntroduceClipN = function(n: number){
+    let dict: any = {
+        1: "first",
+        2: "second",
+        3: "third",
+        4: "fourth",
+        5: "fifth"
+    }; 
+    let speech = new ssml();
+    speech.say(`Here is the ${dict(n)} clip`);
+    return speech.toString();
+}
+
+// Cortana prompts a response after playing a clip
+strings.AskUserForGuess =
     new ssml()
-    .say("Here's the first one")
+    .say("What's your guess?")
     .toString();
 
 // Responses to correct guesses
@@ -60,5 +64,5 @@ strings.IncorrectArtist=
 // Response to a totally incorrect guess
 
 
-strings.demo = strings.Intro
+strings.demo = strings.IntroduceClipN(4);
 export default strings;
