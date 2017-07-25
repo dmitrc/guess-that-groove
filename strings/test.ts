@@ -8,21 +8,27 @@ strings.Intro =
     new ssml()
     .say("OK, let's play Guess that Groove!")
     .pause("300ms")
-    .say("Try to guess the following five Songs. You get one point for the artist or title, and three points if you get both. Let's begin!")
+    .say("Try to guess the following four Songs. You get one point for the artist or title, and three points if you get both. Let's begin!")
     .toString();
 
-// Pick a decade
-// Pick an artist
 
+// Hypothetical Game Types
+// Daily challenge (Default game type: Five daily songs, guess artist+song)    
+    // this string is hardcoded into Intro above
+
+// Pick a decade (for game type: Single decade, guess artist+song)
+strings.PickADecade = "What decade do you want?"
+
+// Pick an artist (for game type: Single artist, guess the song)
+strings.PickAnArtist = "Tell me an artist"
 
 // Cortana says these before playing a clip
 strings.IntroduceClipN = function(n: number){
     let dict: any = {
         1: "first",
-        2: "second",
+        2: "next",
         3: "third",
-        4: "fourth",
-        5: "fifth"
+        4: "last one"
     }; 
     let speech = new ssml();
     speech.say(`Here is the ${dict[n]} clip`);
@@ -35,34 +41,64 @@ strings.AskUserForGuess =
     .say("What's your guess?")
     .toString();
 
+//
+// Potential responses to user input
+//
+
 // Responses to correct guesses
 strings.CorrectArtist =
     new ssml()
-    .say("You got the artist.")
+    // .audio(ding.mp3)
+    .say("One point for the artist!") 
     .toString();
 
 strings.CorrectTitle =
     new ssml()
-    .say("You got the song name.")
+    // .audio(ding.mp3)
+    .say("One point for the title!")
     .toString();
 
 strings.CorrectArtistTitle =
     new ssml()
-    .say("Whoa, nice! That's three points!")
+    // .audio(dingdingding.mp3)
+    .say("Excellent, a 3 point play!")
     .toString();
 
-// Responses to partially correct guesses
-strings.IncorrectArtist=
+// Responses to partially incorrect guesses
+strings.CorrectArtistIncorrectTitle=
     new ssml()
-    .say("That's not it.")
+    .say("Half right. One Point for the artist!")
     .toString();
 
-strings.IncorrectArtist=
+strings.CorrectTitleIncorrectArtist=
     new ssml()
-    .say("That's not it.")
+    .say("Half right. One Point for the title!")
     .toString();
+
 // Response to a totally incorrect guess
+strings.CorrectTitleIncorrectArtist=
+    new ssml()
+    .say("Nice try but no.")
+    .toString();
+
+// If the usre asks for a hint ("Hint" or "Give me a hint")
+strings.Hint function(artist: any)=
+    new ssml()
+    .say(`Sure, I'll get you half way there. The Artist is ${artist}. Now can you guess the title?`)
+    .toString();
+
+// If the user says "Again" or "Play it again"
+
+// If the user says "I don't know" or "I give up"
+
+// Give them the answer (If they get it totally wrong or give up)
+
+//
+// End of game 
+//
+
+// you got <n> points
 
 
-strings.demo = strings.IntroduceClipN(4);
+strings.demo = strings.Intro;
 export default strings;
