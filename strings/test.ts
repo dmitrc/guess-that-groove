@@ -17,6 +17,14 @@ strings.sage2 =
     .say("I would like chinese")
     .toString();
 
-strings.demo = strings.sage2
+
+strings.Intro =
+    new ssml()
+    .say("Let's play Guess that Song!")
+    .pause("300ms")
+    .say("Try to guess the following five Songs. You get one point for the artist or title, and three points if you get both. Let's begin!")
+    .toString();
+
+strings.demo = strings.Intro
 
 export default strings;
