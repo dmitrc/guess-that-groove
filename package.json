@@ -33,6 +33,7 @@
     "botbuilder": "^3.8.4",
     "dotenv-extended": "^2.0.1",
     "node-emoji": "^1.5.1",
-    "restify": "^4.3.0"
+    "restify": "^4.3.0",
+    "azure-storage": "^2.1.0"
   }
 }

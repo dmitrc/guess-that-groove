@@ -8,6 +8,8 @@ import helpDialog from './dialogs/help';
 import aboutDialog from './dialogs/about';
 import feedbackDialog from './dialogs/feedback';
 
+import * as serverFunc from './server';
+
 dotenv.load();
 
 var server = restify.createServer();
@@ -21,6 +23,8 @@ var connector = new builder.ChatConnector({
 });
 
 server.post('/api/messages', connector.listen());
+
+server.get('/api/song', serverFunc.getSong);
 
 var bot = new builder.UniversalBot(connector, (session) => {
     //session.replaceDialog('HelpDialog', { isFallback: true });
