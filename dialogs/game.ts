@@ -12,8 +12,8 @@ let gameDialog =
 
         let msg = new builder.Message(session)
             .text(util.formatCard(title, description))
-            //.speak(speech.ssml())
-            .inputHint(builder.InputHint.expectingInput);
+            .speak(description)
+            .inputHint(builder.InputHint.ignoringInput);
 
         session.send(msg);
         session.beginDialog('RoundDialog', { step: 1, score: 0, total: 5 });
@@ -26,12 +26,12 @@ let gameDialog =
         }
 
         let title = `Final results`;
-        let description = `After ${results.response.turn} turns, your score is ${results.response.score}`;
+        let description = `After ${results.response.total} turns, your score is ${results.response.score}`;
 
         let msg = new builder.Message(session)
             .text(util.formatCard(title, description))
-            //.speak(speech.ssml())
-            .inputHint(builder.InputHint.expectingInput);
+            .speak(description)
+            .inputHint(builder.InputHint.acceptingInput);
 
         session.send(msg).endDialog();
     }

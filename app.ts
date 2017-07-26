@@ -39,17 +39,59 @@ var bot = new builder.UniversalBot(connector, (session) => {
 
 // var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 // bot.recognizer(recognizer);
+let cancelMsg = new builder.Message()
+    .text('Exiting the game...')
+    .speak('Exiting the game')
+    .inputHint(builder.InputHint.ignoringInput);
+
+let confirmMsg = new builder.Message()
+    .text('This will cancel your current progress. Are you sure?')
+    .speak('This will cancel your current progress. Are you sure?')
+    .inputHint(builder.InputHint.ignoringInput);
 
 bot.dialog('GameDialog', gameDialog)
 .triggerAction({
     matches: [
         /game/i
     ]
+})
+.endConversationAction('endConversationAction', cancelMsg, {
+    matches: [
+        /exit/i,
+        /cancel/i,
+        /goodbye/i
+    ],
+    confirmPrompt: confirmMsg
 });
 
-bot.dialog('RoundDialog', roundDialog);
+let repeatMsg = new builder.Message()
+    .text('Sure thing, I will repeat one more time...')
+    .speak('Sure thing, I will repeat one more time...')
+    .inputHint(builder.InputHint.ignoringInput);
 
-bot.dialog('HintDialog', hintDialog);
+bot.dialog('RoundDialog', roundDialog)
+.reloadAction('reloadAction', repeatMsg, {
+    matches: [
+        /repeat/i,
+        /restart/i,
+        /start over/i,
+        /try again/i
+    ]
+});
+
+bot.dialog('HintDialog', hintDialog)
+.triggerAction({
+    matches: [
+        /hint/i,
+        /clue/i
+    ],
+    onSelectAction: (session, args, next) => {
+        // Add the hint dialog to the dialog stack 
+        // (override the default behavior of replacing the stack)
+        let dialog = (args && args.action) || 'HintDialog';
+        session.beginDialog(dialog, args);
+    }
+});
 
 bot.dialog('HelpDialog', helpDialog)
 .triggerAction({
