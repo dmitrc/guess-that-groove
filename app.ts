@@ -69,7 +69,7 @@ let repeatMsg = new builder.Message()
 bot.dialog('RoundDialog', roundDialog)
 .reloadAction('reloadAction', repeatMsg, {
     matches: [
-        /repeat/i,
+        /repeat/i, /* MIGHT CAUSE CONFLICTS WITH CORTANA'S INNER WORKINGS, NOT RECOMMENDED */
         /excuse me/i,
         /(try|play|say)+.*again/i,
         /(try|play|say)+.*one more time/i

@@ -32,8 +32,16 @@ let gameResources = {
             return new ssml().say(`That's all the clips. You earned ${n} points. ${resultsDict[n]}`).toString();
         }
     },
+    namePrompt: {
+        title: '//oneweek demo',
+        description: 'What is your name? We will use it to update the live leaderboard with your score.',
+        speech: new ssml().say('What is your name? We will use it to update the live leaderboard with your score.').toString()
+    },
     outro: {
         title: "Thanks for playing!",
+        titleFn: (user: string) => {
+            return `Thanks for playing, ${user}!`;
+        },
         description: "Come back tomorrow for a new daily challenge and more fun. And, of course, stay tuned for more features and game modes!",
         speech: new ssml().say("Thanks for playing! Come back tomorrow for a new daily challenge and more fun!").toString()
     }
