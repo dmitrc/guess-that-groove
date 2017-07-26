@@ -28,7 +28,7 @@ var connector = new builder.ChatConnector({
 
 server.post('/api/messages', connector.listen());
 
-server.get('/api/song', serverFunc.getSong);
+server.get('/api/song', serverFunc.getSongAPI);
 
 server.use(restify.bodyParser());
 server.post('/api/results', serverFunc.postGameResults);
