@@ -49,7 +49,7 @@ export function postGameResults(req: any, res: any, next: any) {
                 let entity = {
                     PartitionKey: entGen.String(gameRecordsPartitionKey),
                     RowKey: entGen.String(Date.now().toString()),
-                    game_id: entGen.String(results[i].game_id.toString()),
+                    game_id: entGen.String(results[i].game_id ? results[i].game_id.toString() : "1"),
                     score: entGen.String(results[i].score.toString()),
                     session_id: entGen.String(results[i].session_id.toString()),
                     song_id: entGen.String(results[i].song_id.toString()),
