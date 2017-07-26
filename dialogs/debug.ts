@@ -4,7 +4,7 @@ import * as emoji from 'node-emoji';
 import * as util from '../util';
 import ssml from '../ssml';
 
-import { speech } from '../strings/test';
+import { speech } from '../resources/test';
 
 let debugDialog = (session: builder.Session) => {
   let title = "Debug output";

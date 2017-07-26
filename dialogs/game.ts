@@ -18,7 +18,7 @@ let gameDialog =
         session.beginDialog('RoundDialog');
     },
 
-    (session: builder.Session, args: any, next: Function) => {
+    (session: builder.Session, args: any, next: any) => {
         let c = session.conversationData;
 
         let msg = new builder.Message(session)
