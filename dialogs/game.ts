@@ -4,32 +4,43 @@ import * as emoji from 'node-emoji';
 import * as util from '../util';
 import ssml from '../ssml';
 
-import { speech, title, text } from '../strings/test';
+import r from '../resources/game';
 
 let gameDialog = 
 [
     (session: builder.Session) => {
         let msg = new builder.Message(session)
-            .text(util.formatCard(title.Intro, text.Intro))
-            .speak(speech.Intro)
+            .text(util.formatCard(r.intro.title, r.intro.description))
+            .speak(r.intro.speech)
             .inputHint(builder.InputHint.ignoringInput);
 
         session.send(msg);
-        session.beginDialog('RoundDialog', { step: 1, score: 0, total: 5 });
+        session.beginDialog('RoundDialog');
     },
-    (session: builder.Session, results: builder.IPromptResult<any> | undefined) => {
-        if (!results || !results.response) {
-            //something is wrong
-            session.send("Oops, something is very wrong here").endDialog();
-            return;
-        }
+
+    (session: builder.Session, args: any, next: Function) => {
+        let c = session.conversationData;
 
         let msg = new builder.Message(session)
-            .text(util.formatCard('Results', text.PointsReadout(results.response.score)))
-            .speak(speech.PointsReadout(results.response.score))
+            .text(util.formatCard(r.results.title, r.results.descriptionFn(c.score)))
+            .speak(r.results.speechFn(c.score))
+            .inputHint(builder.InputHint.ignoringInput);
+
+        session.send(msg);
+        next && next();
+    },
+
+    (session: builder.Session) => {
+        let c = session.conversationData;
+
+        let msg = new builder.Message(session)
+            .text(util.formatCard(r.outro.title, r.outro.description))
+            .speak(r.outro.speech)
             .inputHint(builder.InputHint.acceptingInput);
 
-        session.send(msg).endDialog();
+        c.round = 0;
+        c.score = 0;
+        session.endConversation(msg);
     }
 ];
 

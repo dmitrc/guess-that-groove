@@ -31,12 +31,12 @@ title.RoundN = function(n: number) {
 }
 text.IntroduceClipN = function(n: number){
     let dict: any = {
-        1: "first",
-        2: "next",
-        3: "third",
+        1: "first one",
+        2: "next clip",
+        3: "third song",
         4: "last one"
     }; 
-    return `Here is the ${dict[n]} clip`;
+    return `Here is the ${dict[n]}`;
 }
 speech.IntroduceClipN = function(n: number){
     let dict: any = {
@@ -106,10 +106,10 @@ speech.Hint = function(artist: any){
 }
 
 // If the user says "Again" or "Play it again"
-text.repeat = "Here it is again.";
+text.Repeat = "Sure, here it is again:";
 speech.Repeat =
     new ssml()
-    .say("Here it is again.")
+    .say("Sure, here it is again:")
     .toString();
 
 // If the user says "I don't know" or "I give up". Just give them the answer. 

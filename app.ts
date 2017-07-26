@@ -10,8 +10,8 @@ import helpDialog from './dialogs/help';
 import aboutDialog from './dialogs/about';
 import feedbackDialog from './dialogs/feedback';
 
-import { speech, title, text } from './strings/test';
-
+import r from './resources/misc';
+import * as util from './util';
 import * as serverFunc from './server';
 
 dotenv.load();
@@ -42,13 +42,13 @@ var bot = new builder.UniversalBot(connector, (session) => {
 // var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 // bot.recognizer(recognizer);
 let cancelMsg = new builder.Message()
-    .text('Exiting the game...')
-    .speak('Exiting the game')
+    .text(util.formatCard(r.cancel.title, r.cancel.description))
+    .speak(r.cancel.speech)
     .inputHint(builder.InputHint.ignoringInput);
 
 let confirmMsg = new builder.Message()
-    .text('This will cancel your current progress. Are you sure?')
-    .speak('This will cancel your current progress. Are you sure?')
+    .text(util.formatCard(r.confirm.title, r.confirm.description))
+    .speak(r.confirm.speech)
     .inputHint(builder.InputHint.ignoringInput);
 
 bot.dialog('GameDialog', gameDialog)
@@ -67,8 +67,8 @@ bot.dialog('GameDialog', gameDialog)
 });
 
 let repeatMsg = new builder.Message()
-    .text(text.Repeat)
-    .speak(speech.Repeat)
+    .text(r.repeat.description)
+    .speak(r.repeat.speech)
     .inputHint(builder.InputHint.ignoringInput);
 
 bot.dialog('RoundDialog', roundDialog)
