@@ -5,8 +5,6 @@ import * as azure from 'azure-storage';
 import Model from './model';
 import * as uuid from 'uuid/v1';
 
-
-
 dotenv.load();
 
 const gameRecordsTableName = "gameRecords";
@@ -40,13 +38,17 @@ export function getSong(req: any, res: any) {
                 "Artist": items[0].Artist._, 
                 "Decade": items[0].Decade._,
                 "Title": items[0].Title._ ,
-                "Url": items[0].Url._  
+                "Url": items[0].Url._,
+                "SongId": items[0].RandomId._,
             });
         }
     });
 }
 
 export function postGameResults(req: any, res: any, next: any) {
+    let gameId = req.params.game_id ? req.params.game_id.toString() : "1";
+    let userId = req.params.user_id ? req.params.user_id.toString() : "Richard Hendricks";
+    let sessionId = getSessionId();
     let results = JSON.parse(req.params.results);
     let resultEntities: object[] = [];
     let entGen = azure.TableUtilities.entityGenerator;
@@ -57,11 +59,11 @@ export function postGameResults(req: any, res: any, next: any) {
                 let entity = {
                     PartitionKey: entGen.String(gameRecordsPartitionKey),
                     RowKey: entGen.String(Date.now().toString()),
-                    game_id: entGen.String(results[i].game_id ? results[i].game_id.toString() : "1"),
+                    game_id: entGen.String(gameId),
                     score: entGen.String(results[i].score.toString()),
-                    session_id: entGen.String(results[i].session_id.toString()),
+                    session_id: entGen.String(sessionId),
                     song_id: entGen.String(results[i].song_id.toString()),
-                    user_id: entGen.String(results[i].user_id.toString()),
+                    user_id: entGen.String(userId),
                     dueDate: entGen.DateTime(new Date(Date.UTC(2015, 6, 20))),
                 };
 
@@ -166,4 +168,14 @@ function addResultsEntityToTable(resultEntities: object[]): boolean {
         } 
     }
     return true;
+}
+
+function getSessionId() {
+  let sessionId = "";
+  let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 15; i++)
+    sessionId += letters.charAt(Math.floor(Math.random() * letters.length));
+
+  return sessionId;
 }
