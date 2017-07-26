@@ -72,12 +72,10 @@ let repeatMsg = new builder.Message()
     .inputHint(builder.InputHint.ignoringInput);
 
 bot.dialog('RoundDialog', roundDialog)
-.reloadAction('reloadAction', r.repeat.description/*repeatMsg*/, {
+.reloadAction('reloadAction', repeatMsg, {
     matches: [
         /repeat/i,
-        /restart/i,
-        /start over/i,
-        /try again/i
+        /(try|play|say)+.*again/i
     ]
 });
 
