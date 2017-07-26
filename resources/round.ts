@@ -14,7 +14,7 @@ let roundResources = {
             return `Round #${n}`;
         },
         descriptionFn: (n: number) => {
-            return `Here is the ${indexDict[n]}.<br/>What's your guess?`;
+            return `Here is the ${indexDict[n]}.\n\nWhat's your guess?`;
         },
         speechFn: (n: number, url: string) => {
             return new ssml().say(`Here is the ${indexDict[n]}.`).pause("330ms").audio(url).pause("330ms").say("What's your guess?").toString();
@@ -39,7 +39,7 @@ let roundResources = {
                 t += 'Nice try, but no.'
             }
 
-            t += `<br/>Your score so far is ${score} points out of ${n*3}.`;
+            t += `\n\nYour score so far is ${score} points out of ${n*3}.`;
 
             return t;
         },
