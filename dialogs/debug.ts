@@ -4,17 +4,15 @@ import * as emoji from 'node-emoji';
 import * as util from '../util';
 import ssml from '../ssml';
 
-import testStrings from '../strings/test';
+import { speech } from '../strings/test';
 
 let debugDialog = (session: builder.Session) => {
-  let speech = testStrings.demo;
-
   let title = "Debug output";
-  let description = `#### Raw:${util.br()}${speech}`;
+  let description = `#### Raw:${util.br()}${speech.demo}`;
 
   let msg = new builder.Message(session)
       .text(util.formatCard(title, description))
-      .speak(speech)
+      .speak(speech.demo)
       .inputHint(builder.InputHint.acceptingInput);
 
   session.send(msg).endDialog();

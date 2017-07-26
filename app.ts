@@ -10,6 +10,8 @@ import helpDialog from './dialogs/help';
 import aboutDialog from './dialogs/about';
 import feedbackDialog from './dialogs/feedback';
 
+import { speech, title, text } from './strings/test';
+
 import * as serverFunc from './server';
 
 dotenv.load();
@@ -65,8 +67,8 @@ bot.dialog('GameDialog', gameDialog)
 });
 
 let repeatMsg = new builder.Message()
-    .text('Sure thing, I will repeat one more time...')
-    .speak('Sure thing, I will repeat one more time...')
+    .text(text.Repeat)
+    .speak(speech.Repeat)
     .inputHint(builder.InputHint.ignoringInput);
 
 bot.dialog('RoundDialog', roundDialog)

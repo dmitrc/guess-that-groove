@@ -4,15 +4,14 @@ import * as emoji from 'node-emoji';
 import * as util from '../util';
 import ssml from '../ssml';
 
+import { speech, title, text } from '../strings/test';
+
 let gameDialog = 
 [
     (session: builder.Session) => {
-        let title = `Welcome!`;
-        let description = 'Rules of the game go here...';
-
         let msg = new builder.Message(session)
-            .text(util.formatCard(title, description))
-            .speak(description)
+            .text(util.formatCard(title.Intro, text.Intro))
+            .speak(speech.Intro)
             .inputHint(builder.InputHint.ignoringInput);
 
         session.send(msg);
@@ -25,12 +24,9 @@ let gameDialog =
             return;
         }
 
-        let title = `Final results`;
-        let description = `After ${results.response.total} turns, your score is ${results.response.score}`;
-
         let msg = new builder.Message(session)
-            .text(util.formatCard(title, description))
-            .speak(description)
+            .text(util.formatCard('Results', text.PointsReadout(results.response.score)))
+            .speak(speech.PointsReadout(results.response.score))
             .inputHint(builder.InputHint.acceptingInput);
 
         session.send(msg).endDialog();

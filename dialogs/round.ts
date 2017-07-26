@@ -4,50 +4,41 @@ import * as emoji from 'node-emoji';
 import * as util from '../util';
 import ssml from '../ssml';
 
+import { speech, title, text } from '../strings/test';
+
 let roundDialog = 
 [
     (session: builder.Session, args: any) => {
         if (!args || !args.inProgress) {
             session.conversationData.step = 0;
             session.conversationData.score = 0;
-            session.conversationData.total = 5;
+            session.conversationData.total = 4;
             session.conversationData.steps = [];
         }
 
         // Increment the turn before starting
         ++session.conversationData.step;
 
-        session.conversationData.steps[session.conversationData.step] = {
-            song: {
-                title: "Get Lucky",
-                artist: "Daft Punk"
-            },
-            answer: null
-        }
-
-        let title = `Round ${session.conversationData.step}`;
-        let description = 'Please listen to this round\'s song... What is your guess?';
-
         let msg = new builder.Message(session)
-            .text(util.formatCard(title, description))
-            .speak(description)
+            .text(util.formatCard(title.RoundN(session.conversationData.step), text.IntroduceClipN(session.conversationData.step)))
+            .speak(speech.IntroduceClipN(session.conversationData.step))
             .inputHint(builder.InputHint.expectingInput);
+        
+        // TODO: Add the guess prompt
+        // TODO: Ummm, add the audio itself?
 
         builder.Prompts.text(session, msg, {
-            retryPrompt: "What is your guess, again?",
-            retrySpeak: "What is your guess, again?"
+            retryPrompt: text.IntroduceClipN(session.conversationData.step),
+            retrySpeak: speech.IntroduceClipN(session.conversationData.step)
         });
     },
     (session: builder.Session, results: builder.IPromptTextResult) => {
         // Insert some logic here
-        ++session.conversationData.score;
-
-        let title = `Round ${session.conversationData.step} results`;
-        let description = `Your answer was ${results.response}. Your score is ${session.conversationData.score}`;
+        session.conversationData.score += 3;
 
         let msg = new builder.Message(session)
-            .text(util.formatCard(title, description))
-            .speak(description)
+            .text(util.formatCard(title.RoundN(session.conversationData.step), text.CorrectArtistTitle))
+            .speak(speech.CorrectArtistTitle)
             .inputHint(builder.InputHint.ignoringInput);
 
         session.send(msg);
