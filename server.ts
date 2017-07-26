@@ -2,7 +2,9 @@
 
 import * as dotenv from 'dotenv-extended';
 import * as azure from 'azure-storage';
-import Model from './model'
+import Model from './model';
+import * as uuid from 'uuid/v1';
+
 
 
 dotenv.load();
@@ -18,22 +20,28 @@ var gameRecordsTable = new Model(tableService, gameRecordsTableName, gameRecords
 export function getSong(req: any, res: any) {
     //req.params.name
     var query = new azure.TableQuery()
-                //.select(['RowKey'])
-                .top(1);
-                //.where('Title eq ?', req.params.variant);
-
+                .select(['Artist', 'Decade', 'Title', 'Url'])
+                .top(1)
+                .where('RandomId < ?guid?', uuid());
+    
     songTable.find(query, function itemsFound(error: any, items: any) {
         if (error) {
             res.send(error);
             return;
         }
 
-        res.setHeader('Content-Type', 'application/json'); 
         if(!items || items.length != 1) {
-            res.json({});
+            // no random song found with this guid, try again
+            getSong(req, res);
         }
         else {
-            res.json({ "RowKey": items[0].RowKey._ });
+            res.setHeader('Content-Type', 'application/json'); 
+            res.json({ 
+                "Artist": items[0].Artist._, 
+                "Decade": items[0].Decade._,
+                "Title": items[0].Title._ ,
+                "Url": items[0].Url._  
+            });
         }
     });
 }
