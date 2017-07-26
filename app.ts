@@ -72,7 +72,7 @@ let repeatMsg = new builder.Message()
     .inputHint(builder.InputHint.ignoringInput);
 
 bot.dialog('RoundDialog', roundDialog)
-.reloadAction('reloadAction', repeatMsg, {
+.reloadAction('reloadAction', r.repeat.description/*repeatMsg*/, {
     matches: [
         /repeat/i,
         /restart/i,

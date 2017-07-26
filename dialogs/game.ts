@@ -38,8 +38,7 @@ let gameDialog =
             .speak(r.outro.speech)
             .inputHint(builder.InputHint.acceptingInput);
 
-        c.round = 0;
-        c.score = 0;
+        c.inProgress = false;
         session.endConversation(msg);
     }
 ];
