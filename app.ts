@@ -96,8 +96,7 @@ bot.dialog('HintDialog', hintDialog)
 bot.dialog('HelpDialog', helpDialog)
 .triggerAction({
     matches: [
-        /help/i,
-        /commands/i
+        /what can i do/i
     ]
 });
 
@@ -105,23 +104,21 @@ bot.dialog('AboutDialog', aboutDialog)
 .triggerAction({
     matches: [
         /about this/i,
-        /author/i,
-        /contact/i,
-        /created/i
+        /who created/i
     ]
 });
 
 bot.dialog('FeedbackDialog', feedbackDialog)
 .triggerAction({
     matches: [
-        /feedback/i,
-        /review/i
+        /leave feedback/i,
+        /leave review/i
     ]
 });
 
 bot.dialog('DebugDialog', debugDialog)
 .triggerAction({
     matches: [
-        /debug/i
+        /follow the white rabbit/i
     ]
 });
