@@ -40,7 +40,6 @@ export function getSong(req: any, res: any) {
 
 export function postGameResults(req: any, res: any, next: any) {
     let results = JSON.parse(req.params.results);
-    let name = req.params.name;
     let resultEntities: object[] = [];
     let entGen = azure.TableUtilities.entityGenerator;
 
@@ -86,7 +85,7 @@ export function getTopNPlayers(req: any, res: any, next: any) {
             return;
         }
 
-        console.log(items);
+        // console.log(items);
         res.setHeader('Content-Type', 'application/json'); 
         let players : object[] = [];
         if (items && items.length > 0) {
