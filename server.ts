@@ -14,7 +14,8 @@ var tableService = azure.createTableService(process.env.STORAGE_NAME, process.en
 var songTable = new Model(tableService, "songs", "song");
 var gameRecordsTable = new Model(tableService, gameRecordsTableName, gameRecordsPartitionKey);
 
-export function getSong(fn: Function) {
+export function getSong(fn: Function, chosenSongs: any) {
+    chosenSongs = chosenSongs || [];
     //req.params.name
     var query = new azure.TableQuery()
                 .select(['Artist', 'Decade', 'Title', 'Url', 'RandomId'])
@@ -27,9 +28,9 @@ export function getSong(fn: Function) {
             return;
         }
 
-        if(!items || items.length != 1) {
+        if(!items || items.length != 1 || chosenSongs.indexOf(items[0]) > -1)  {
             // no random song found with this guid, try again
-            getSong(fn);
+            getSong(fn, chosenSongs);
         }
         else {
             fn({ 
@@ -52,7 +53,7 @@ export function getSongAPI(req: any, res: any) {
 
         res.setHeader('Content-Type', 'application/json'); 
         res.json(obj);
-    });
+    }, req.params.chosenSongs);
 }
 
 export function postGameResults(req: any, res: any, next: any) {
