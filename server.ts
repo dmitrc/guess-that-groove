@@ -8,7 +8,7 @@ import * as uuid from 'uuid/v1';
 dotenv.load();
 
 const gameRecordsTableName = "gameRecords";
-const gameRecordsPartitionKey = "gameReccord";
+const gameRecordsPartitionKey = "gameRecord";
 
 var tableService = azure.createTableService(process.env.STORAGE_NAME, process.env.STORAGE_KEY);
 var songTable = new Model(tableService, "songs", "song");
@@ -56,8 +56,8 @@ export function getSongAPI(req: any, res: any) {
 }
 
 export function postGameResults(req: any, res: any, next: any) {
-    let gameId = req.params.game_id ? req.params.game_id.toString() : "1";
-    let userId = req.params.user_id ? req.params.user_id.toString() : "Richard Hendricks";
+    let gameId = req.params.gameId ? req.params.gameId.toString() : "1";
+    let userId = req.params.userId ? req.params.userId.toString() : "Richard Hendricks";
     let sessionId = getSessionId();
     let results = JSON.parse(req.params.results);
     let resultEntities: object[] = [];
@@ -68,7 +68,7 @@ export function postGameResults(req: any, res: any, next: any) {
             if (results.hasOwnProperty(i)) {
                 let entity = {
                     PartitionKey: entGen.String(gameRecordsPartitionKey),
-                    RowKey: entGen.String(Date.now().toString()),
+                    RowKey: entGen.String((Date.now() + i).toString()),
                     game_id: entGen.String(gameId),
                     score: entGen.String(results[i].score.toString()),
                     session_id: entGen.String(sessionId),
