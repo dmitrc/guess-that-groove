@@ -35,12 +35,12 @@ server.post('/api/answer', serverFunc.giveAnswer);
 server.get('/api/leaderboard/:game_id', serverFunc.getTopNPlayers);
 
 var bot = new builder.UniversalBot(connector, (session) => {
-    //session.replaceDialog('HelpDialog', { isFallback: true });
-    session.replaceDialog('DebugDialog');
+    session.replaceDialog('GameDialog');
 });
 
 // var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 // bot.recognizer(recognizer);
+
 let cancelMsg = new builder.Message()
     .text(util.formatCard(r.cancel.title, r.cancel.description))
     .speak(r.cancel.speech)
