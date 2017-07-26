@@ -17,7 +17,7 @@ var gameRecordsTable = new Model(tableService, gameRecordsTableName, gameRecords
 export function getSong(fn: Function) {
     //req.params.name
     var query = new azure.TableQuery()
-                .select(['Artist', 'Decade', 'Title', 'Url'])
+                .select(['Artist', 'Decade', 'Title', 'Url', 'RandomId'])
                 .top(1)
                 .where('RandomId < ?guid?', uuid());
     
