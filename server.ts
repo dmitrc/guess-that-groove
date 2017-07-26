@@ -3,7 +3,7 @@
 import * as dotenv from 'dotenv-extended';
 import * as azure from 'azure-storage';
 import Model from './model';
-import * as uuid from 'uuid/v1';
+import * as uuid from 'uuid/v4';
 
 dotenv.load();
 
