@@ -9,6 +9,7 @@ dotenv.load();
 
 var tableService = azure.createTableService(process.env.STORAGE_NAME, process.env.STORAGE_KEY);
 var songTable = new Model(tableService, "songs", "song");
+var gameRecordsTable = new Model(tableService, "gameRecords", "gameReccord");
 
 
 export function getSong(req: any, res: any) {
@@ -35,9 +36,77 @@ export function getSong(req: any, res: any) {
 }
 
 export function giveAnswer() {
+
     
 }
 
-export function getLeaderboard() {
+export function getTopNPlayers(req: any, res: any, next: any) {
+    console.log(typeof req.params.game_id);
+    var gameRecords = new azure.TableQuery()
+                .where('game_id eq ?', req.params.game_id);
     
+    gameRecordsTable.find(gameRecords, function itemsFound(error: any, items: any) {
+        if (error) {
+            res.send(error);
+            return;
+        }
+
+        console.log(items);
+        res.setHeader('Content-Type', 'application/json'); 
+        let players : object[] = [];
+        if (items && items.length > 0) {
+            let topPlayersAndScores = getTopPlayersAndScores(items);
+            for (let i in topPlayersAndScores) {
+                if (items.hasOwnProperty(i)) {
+                    players.push({"User": topPlayersAndScores[i][0], "Score:": topPlayersAndScores[i][1]});
+                }
+            }
+        }
+        res.json(JSON.stringify(players));
+    });
+
+    return next();
+}
+
+function getTopPlayersAndScores(items: any): number[][] {
+    var result: { [name: string]: any} = {}
+    for (let i in items) {
+        if (items.hasOwnProperty(i)) {
+            let session = items[i].session_id._;
+            if (session in result) {
+                result[session]["score"] += parseInt(items[i].score._);
+            } else {
+                result[session] = {
+                    "session_id": session,
+                    "user_id": items[i].user_id._,
+                    "score": parseInt(items[i].score._)
+                }
+            }
+        }
+    }
+
+    console.log("----------------------");
+    console.log(`result:${result}`);
+    let userScores: { [name: number]: any} = {};
+    for (let session in result) {
+        if (result.hasOwnProperty(session)) {
+            let user_id = result[session]["user_id"];
+            if (userScores.hasOwnProperty(user_id)) {
+                userScores[user_id] = Math.max(userScores[user_id], result[session]["score"]);
+            } else {
+                userScores[user_id] = result[session]["score"];
+            }
+        }
+    }
+
+    let userScoresArray: number[][] = [];
+    for (let user_id in userScores) {
+        if (userScores.hasOwnProperty(user_id)) {
+            userScoresArray.push([user_id, userScores[user_id]]);
+        }
+    }
+    
+    return userScoresArray.sort(function(a, b) {
+        return b[1] - a[1];
+    });
 }

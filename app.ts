@@ -30,9 +30,9 @@ server.post('/api/messages', connector.listen());
 
 server.get('/api/song', serverFunc.getSong);
 
-server.post('/answer', serverFunc.giveAnswer);
+server.post('/api/answer', serverFunc.giveAnswer);
 
-server.get('/leaderboard', serverFunc.getLeaderboard);
+server.get('/api/leaderboard/:game_id', serverFunc.getTopNPlayers);
 
 var bot = new builder.UniversalBot(connector, (session) => {
     //session.replaceDialog('HelpDialog', { isFallback: true });
