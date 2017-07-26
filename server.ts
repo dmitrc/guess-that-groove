@@ -50,11 +50,11 @@ export function postGameResults(req: any, res: any, next: any) {
                 let entity = {
                     PartitionKey: entGen.String(gameRecordsPartitionKey),
                     RowKey: entGen.String(Date.now().toString()),
-                    game_id: entGen.String(results[i].game_id),
-                    score: entGen.String(results[i].score),
-                    session_id: entGen.String(results[i].session_id),
-                    song_id: entGen.String(results[i].song_id),
-                    user_id: entGen.String(results[i].user_id),
+                    game_id: entGen.String(results[i].game_id.toString()),
+                    score: entGen.String(results[i].score.toString()),
+                    session_id: entGen.String(results[i].session_id.toString()),
+                    song_id: entGen.String(results[i].song_id.toString()),
+                    user_id: entGen.String(results[i].user_id.toString()),
                     dueDate: entGen.DateTime(new Date(Date.UTC(2015, 6, 20))),
                 };
 
