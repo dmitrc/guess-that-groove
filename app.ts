@@ -52,11 +52,6 @@ let confirmMsg = new builder.Message()
     .inputHint(builder.InputHint.ignoringInput);
 
 bot.dialog('GameDialog', gameDialog)
-.triggerAction({
-    matches: [
-        /game/i
-    ]
-})
 .endConversationAction('endConversationAction', cancelMsg, {
     matches: [
         /exit/i,
@@ -75,7 +70,9 @@ bot.dialog('RoundDialog', roundDialog)
 .reloadAction('reloadAction', repeatMsg, {
     matches: [
         /repeat/i,
-        /(try|play|say)+.*again/i
+        /excuse me/i,
+        /(try|play|say)+.*again/i,
+        /(try|play|say)+.*one more time/i
     ]
 });
 
