@@ -3,9 +3,7 @@
 import * as dotenv from 'dotenv-extended';
 import * as azure from 'azure-storage';
 import Model from './model';
-import * as uuid from 'uuid/v1';
-
-
+import * as uuid from 'uuid';
 
 dotenv.load();
 
@@ -16,8 +14,7 @@ var tableService = azure.createTableService(process.env.STORAGE_NAME, process.en
 var songTable = new Model(tableService, "songs", "song");
 var gameRecordsTable = new Model(tableService, gameRecordsTableName, gameRecordsPartitionKey);
 
-
-export function getSong(req: any, res: any) {
+export function getSong(fn: Function) {
     //req.params.name
     var query = new azure.TableQuery()
                 .select(['Artist', 'Decade', 'Title', 'Url'])
@@ -26,23 +23,34 @@ export function getSong(req: any, res: any) {
     
     songTable.find(query, function itemsFound(error: any, items: any) {
         if (error) {
-            res.send(error);
+            fn(null, { error: error });
             return;
         }
 
         if(!items || items.length != 1) {
             // no random song found with this guid, try again
-            getSong(req, res);
+            getSong(fn);
         }
         else {
-            res.setHeader('Content-Type', 'application/json'); 
-            res.json({ 
-                "Artist": items[0].Artist._, 
-                "Decade": items[0].Decade._,
-                "Title": items[0].Title._ ,
-                "Url": items[0].Url._  
+            fn({ 
+                "artist": items[0].Artist._, 
+                "decade": items[0].Decade._,
+                "title": items[0].Title._ ,
+                "url": items[0].Url._  
             });
         }
+    });
+}
+
+export function getSongAPI(req: any, res: any) {
+    getSong((obj: any, err: any) => {
+        if (err) {
+            res.send(err);
+            return;
+        }
+
+        res.setHeader('Content-Type', 'application/json'); 
+        res.json(obj);
     });
 }
 

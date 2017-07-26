@@ -2,6 +2,7 @@ import * as builder from 'botbuilder';
 import * as emoji from 'node-emoji';
 
 import * as util from '../util';
+import * as server from '../server';
 import ssml from '../ssml';
 
 import r from '../resources/round';
@@ -21,6 +22,12 @@ let roundDialog =
         }
 
         let url = "https://guessthatgroove.blob.core.windows.net/songs/1960s%20Byrds%20-%20Mr.%20Tambourine%20Man.mp3";
+        server.getSong((obj: any, err: any) => {
+            if (obj) {
+                console.log(JSON.stringify(obj));
+            }
+        });
+
         let msg = new builder.Message(session)
             .text(util.formatCard(r.intro.titleFn(c.round), r.intro.descriptionFn(c.round)))
             .speak(r.intro.speechFn(c.round, url))
