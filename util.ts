@@ -9,6 +9,15 @@ export function br(n: number = 1): string {
     return res;
 }
 
+export function trim(s: string): string {
+    return s
+        .replace(/\./g, "")
+        .replace(/\?/g, "")
+        .replace(/\!/g, "")
+        .replace(/'/g, "")
+        .toLowerCase();
+}
+
 export function formatCard(title: string, description: string): string {
     let res = '';
     if (title) {
