@@ -50,14 +50,16 @@ let cancelMsg = new builder.Message()
 let confirmMsg = new builder.Message()
     .text(util.formatCard(r.confirm.title, r.confirm.description))
     .speak(r.confirm.speech)
-    .inputHint(builder.InputHint.ignoringInput);
+    .inputHint(builder.InputHint.expectingInput);
 
 bot.dialog('GameDialog', gameDialog)
 .endConversationAction('endConversationAction', cancelMsg, {
     matches: [
+        /quit/i, /* MIGHT CAUSE CONFLICTS WITH CORTANA'S INNER WORKINGS, NOT RECOMMENDED */
+        /cancel/i, /* MIGHT CAUSE CONFLICTS WITH CORTANA'S INNER WORKINGS, NOT RECOMMENDED */
         /exit/i,
-        /cancel/i,
-        /goodbye/i
+        /abandon/i,
+        /(screw|fuck) this/i
     ],
     confirmPrompt: confirmMsg
 });
