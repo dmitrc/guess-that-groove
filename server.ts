@@ -7,9 +7,12 @@ import Model from './model'
 
 dotenv.load();
 
+const gameRecordsTableName = "gameRecords";
+const gameRecordsPartitionKey = "gameReccord";
+
 var tableService = azure.createTableService(process.env.STORAGE_NAME, process.env.STORAGE_KEY);
 var songTable = new Model(tableService, "songs", "song");
-var gameRecordsTable = new Model(tableService, "gameRecords", "gameReccord");
+var gameRecordsTable = new Model(tableService, gameRecordsTableName, gameRecordsPartitionKey);
 
 
 export function getSong(req: any, res: any) {
@@ -35,9 +38,41 @@ export function getSong(req: any, res: any) {
     });
 }
 
-export function giveAnswer() {
+export function postGameResults(req: any, res: any, next: any) {
+    let results = JSON.parse(req.params.results);
+    let name = req.params.name;
+    let resultEntities: object[] = [];
+    let entGen = azure.TableUtilities.entityGenerator;
 
-    
+    if (results && results.length > 0) {
+        for (let i in results) {
+            if (results.hasOwnProperty(i)) {
+                let entity = {
+                    PartitionKey: entGen.String(gameRecordsPartitionKey),
+                    RowKey: entGen.String(Date.now().toString()),
+                    game_id: entGen.String(results[i].game_id),
+                    score: entGen.String(results[i].score),
+                    session_id: entGen.String(results[i].session_id),
+                    song_id: entGen.String(results[i].song_id),
+                    user_id: entGen.String(results[i].user_id),
+                    dueDate: entGen.DateTime(new Date(Date.UTC(2015, 6, 20))),
+                };
+
+                resultEntities.push(entity);
+            }
+        }
+    }
+
+    let msg;
+    if (addResultsEntityToTable(resultEntities)) {
+        msg = 'successfully uploaded game records';
+        res.status(200);
+    } else {
+        let msg = 'failed in uploading game records, try again';
+        res.status(500);
+    }
+    console.log(msg);
+    res.send({message: msg});
 }
 
 export function getTopNPlayers(req: any, res: any, next: any) {
@@ -109,4 +144,19 @@ function getTopPlayersAndScores(items: any): number[][] {
     return userScoresArray.sort(function(a, b) {
         return b[1] - a[1];
     });
+}
+
+function addResultsEntityToTable(resultEntities: object[]): boolean {
+    for (let i in resultEntities) {
+        if(resultEntities.hasOwnProperty(i)) {
+            console.log(`uploading: ${JSON.stringify(resultEntities[i])}`);
+            tableService.insertEntity(gameRecordsTableName, resultEntities[i], function (error, result, response) {
+                if(error){
+                    console.log(error);
+                    return false;
+                }
+            });
+        } 
+    }
+    return true;
 }

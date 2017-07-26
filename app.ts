@@ -30,7 +30,8 @@ server.post('/api/messages', connector.listen());
 
 server.get('/api/song', serverFunc.getSong);
 
-server.post('/api/answer', serverFunc.giveAnswer);
+server.use(restify.bodyParser());
+server.post('/api/results', serverFunc.postGameResults);
 
 server.get('/api/leaderboard/:game_id', serverFunc.getTopNPlayers);
 
