@@ -78,6 +78,11 @@ let roundResources = {
         speechFn: (artist: string, title: string) => {
             return new ssml().say(`That was ${title} by ${artist}.`).toString();
         }
+    },
+    error: {
+        title: 'Oops!',
+        description: 'Something went wrong when retrieving a song. Please try again in a little bit.',
+        speech: new ssml().say('I am sorry, something went wrong when retrieving a song. Please try again in a little bit.').toString()
     }
 };
 

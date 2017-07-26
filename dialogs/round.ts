@@ -16,40 +16,53 @@ let roundDialog =
            c.round = 1;
            c.score = 0;
            c.total = 4;
-           c.stats = [];
+           c.results = [];
+           c.currentSong = null;
 
            c.inProgress = true;
         }
 
-        let url = "https://guessthatgroove.blob.core.windows.net/songs/1960s%20Byrds%20-%20Mr.%20Tambourine%20Man.mp3";
         server.getSong((obj: any, err: any) => {
             if (obj) {
-                console.log(JSON.stringify(obj));
+                c.currentSong = obj;
+                console.log(`[LOG] Got song from the backend: ${JSON.stringify(obj)}`);
+
+                let msg = new builder.Message(session)
+                    .text(util.formatCard(r.intro.titleFn(c.round), r.intro.descriptionFn(c.round)))
+                    .speak(r.intro.speechFn(c.round, obj.url))
+                    .inputHint(builder.InputHint.expectingInput);
+
+                builder.Prompts.text(session, msg, {
+                    retryPrompt: msg,
+                    retrySpeak: r.intro.speechFn(c.round, obj.url)
+                });
             }
-        });
+            else {
+                let msg = new builder.Message(session)
+                    .text(util.formatCard(r.error.title, r.error.description))
+                    .speak(r.error.speech)
+                    .inputHint(builder.InputHint.acceptingInput);
 
-        let msg = new builder.Message(session)
-            .text(util.formatCard(r.intro.titleFn(c.round), r.intro.descriptionFn(c.round)))
-            .speak(r.intro.speechFn(c.round, url))
-            .inputHint(builder.InputHint.expectingInput);
-        
-        // TODO: Add the guess prompt
-        // TODO: Ummm, add the audio itself?
-
-        builder.Prompts.text(session, msg, {
-            retryPrompt: msg,
-            retrySpeak: r.intro.speechFn(c.round, url)
+                // Abandon all the hope
+                session.endConversation(msg);
+            }
         });
     },
     (session: builder.Session, results: builder.IPromptTextResult) => {
         let c = session.conversationData;
+        let a = util.trim(results.response || "");
 
-        // Insert some logic here
-        c.score += 3;
+        // THIS NEEDS SOME FINETUNING!
+        let didGuessArtist = a.indexOf(util.trim(c.currentSong.artist)) > -1;
+        let didGuessTitle = a.indexOf(util.trim(c.currentSong.title)) > -1;
+
+        console.log(`[LOG] Guessed: ${results.response}, Actual: ${c.currentSong.artist} - ${c.currentSong.title}`);
+
+        c.score += (didGuessArtist && didGuessTitle) ? 3 : (didGuessArtist || didGuessTitle) ? 1 : 0;
 
         let msg = new builder.Message(session)
-            .text(util.formatCard(r.results.titleFn(c.round), r.results.descriptionFn(c.round, c.score, true, true)))
-            .speak(r.results.speechFn(c.round, true, true))
+            .text(util.formatCard(r.results.titleFn(c.round), r.results.descriptionFn(c.round, c.score, didGuessArtist, didGuessTitle)))
+            .speak(r.results.speechFn(c.round, didGuessArtist, didGuessTitle))
             .inputHint(builder.InputHint.ignoringInput);
 
         session.send(msg);
