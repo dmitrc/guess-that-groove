@@ -27,7 +27,7 @@ var connector = new builder.ChatConnector({
 });
 
 server.post('/api/messages', connector.listen());
-server.get('/api/leaderboard/:game_id', serverFunc.getTopNPlayers);
+server.get('/api/leaderboard/:gameId', serverFunc.getTopNPlayers);
 
 var bot = new builder.UniversalBot(connector, (session) => {
     session.replaceDialog('GameDialog');
