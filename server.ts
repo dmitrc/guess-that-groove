@@ -14,7 +14,7 @@ var tableService = azure.createTableService(process.env.STORAGE_NAME, process.en
 var songTable = new Model(tableService, "songs", "song");
 var gameRecordsTable = new Model(tableService, gameRecordsTableName, gameRecordsPartitionKey);
 
-export function getSong(fn: Function, chosenSongs: any) {
+export function getSong(fn: Function, chosenSongs?: any) {
     chosenSongs = chosenSongs || [];
     //req.params.name
     var query = new azure.TableQuery()
@@ -53,7 +53,7 @@ export function getSongAPI(req: any, res: any) {
 
         res.setHeader('Content-Type', 'application/json'); 
         res.json(obj);
-    }, req.params.chosenSongs);
+    }, null /*TODO: FIX EVENTUALLY*/);
 }
 
 export function postGameResults(req: any, res: any, next: any) {
