@@ -56,11 +56,11 @@ let roundDialog =
     },
     (session: builder.Session, results: builder.IPromptTextResult) => {
         let c = session.conversationData;
-        let a = util.trim(results.response || "");
+        let a = util.trim(results.response || "").toLowerCase();
 
         // THIS NEEDS SOME FINETUNING!
-        let didGuessArtist = a.indexOf(util.trim(c.currentSong.artist)) > -1;
-        let didGuessTitle = a.indexOf(util.trim(c.currentSong.title)) > -1;
+        let didGuessArtist = a.indexOf(util.trim(c.currentSong.artist).toLowerCase()) > -1;
+        let didGuessTitle = a.indexOf(util.trim(c.currentSong.title).toLowerCase()) > -1;
 
         console.log(`[LOG] Guessed: ${results.response}, Actual: ${c.currentSong.artist} - ${c.currentSong.title}`);
 
