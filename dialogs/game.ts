@@ -2,6 +2,7 @@ import * as builder from 'botbuilder';
 import * as emoji from 'node-emoji';
 
 import * as util from '../util';
+import * as server from '../server';
 import ssml from '../ssml';
 
 import r from '../resources/game';
@@ -60,6 +61,15 @@ let gameDialog =
             .speak(r.outro.speech)
             .inputHint(builder.InputHint.acceptingInput);
 
+        // Send the results!
+        let gameId = "1";
+        console.log(`[LOG] Submitting results with gameId=${gameId}, userId=${user || "Anonymous"}, results=${JSON.stringify(c.results)}`);
+        
+        server.postGameResults(gameId, user || "Anonymous", c.results, (isSuccess: boolean) => {
+            console.log(`[LOG] Submitting game results was ${isSuccess ? "" : "not"} successful.`);
+        });
+        
+        // Reset all the things!
         c.inProgress = false;
         session.endConversation(msg);
     }
