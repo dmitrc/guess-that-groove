@@ -7,7 +7,8 @@ import ssml from '../ssml';
 import r from '../resources/round';
 
 let hintDialog = (session: builder.Session, args: any) => {
-    let artist = '%ArtistName%';
+    let c = session.conversationData;
+    let artist = c.currentSong.artist;
     let msg = new builder.Message(session)
         .text(util.formatCard(r.hint.title, r.hint.descriptionFn(artist)))
         .speak(r.hint.speechFn(artist))
