@@ -93,7 +93,7 @@ export function getTopNPlayers(req: any, res: any, next: any) {
             let topPlayersAndScores = getTopPlayersAndScores(items);
             for (let i in topPlayersAndScores) {
                 if (items.hasOwnProperty(i)) {
-                    players.push({"User": topPlayersAndScores[i][0], "Score:": topPlayersAndScores[i][1]});
+                    players.push({"user": topPlayersAndScores[i][0], "score:": topPlayersAndScores[i][1]});
                 }
             }
         }
