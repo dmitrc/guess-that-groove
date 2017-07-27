@@ -28,12 +28,6 @@ var connector = new builder.ChatConnector({
 });
 
 server.post('/api/messages', connector.listen());
-
-server.get('/api/song', serverFunc.getSongAPI);
-
-server.use(restify.bodyParser());
-server.post('/api/results', serverFunc.postGameResults);
-
 server.get('/api/leaderboard/:game_id', serverFunc.getTopNPlayers);
 
 server.get('/api/searchByArtist/:keyword', grooveApi.searchTrackByArtist);

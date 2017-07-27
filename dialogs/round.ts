@@ -28,7 +28,7 @@ let roundDialog =
 
         console.log(`[LOG] Getting new song, except one of these ids: ${JSON.stringify(seenSongs)}`);
 
-        server.getSong((obj: any, err: any) => {
+        server.getSong(seenSongs, (obj: any, err: any) => {
             if (obj) {
                 c.currentSong = obj;
                 console.log(`[LOG] Got song from the backend: ${JSON.stringify(obj)}`);
@@ -52,15 +52,15 @@ let roundDialog =
                 // Abandon all the hope
                 session.endConversation(msg);
             }
-        }, seenSongs);
+        });
     },
     (session: builder.Session, results: builder.IPromptTextResult) => {
         let c = session.conversationData;
-        let a = util.trim(results.response || "");
+        let a = util.trim(results.response || "").toLowerCase();
 
         // THIS NEEDS SOME FINETUNING!
-        let didGuessArtist = a.indexOf(util.trim(c.currentSong.artist)) > -1;
-        let didGuessTitle = a.indexOf(util.trim(c.currentSong.title)) > -1;
+        let didGuessArtist = a.indexOf(util.trim(c.currentSong.artist).toLowerCase()) > -1;
+        let didGuessTitle = a.indexOf(util.trim(c.currentSong.title).toLowerCase()) > -1;
 
         console.log(`[LOG] Guessed: ${results.response}, Actual: ${c.currentSong.artist} - ${c.currentSong.title}`);
 

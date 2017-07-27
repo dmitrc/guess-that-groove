@@ -14,8 +14,7 @@ var tableService = azure.createTableService(process.env.STORAGE_NAME, process.en
 var songTable = new Model(tableService, "songs", "song");
 var gameRecordsTable = new Model(tableService, gameRecordsTableName, gameRecordsPartitionKey);
 
-export function getSong(fn: Function, chosenSongs?: any) {
-    chosenSongs = chosenSongs || [];
+export function getSong(seenSongs: Array<any>, fn: Function) {
     //req.params.name
     var query = new azure.TableQuery()
                 .select(['Artist', 'Decade', 'Title', 'Url', 'RandomId'])
@@ -28,9 +27,9 @@ export function getSong(fn: Function, chosenSongs?: any) {
             return;
         }
 
-        if(!items || items.length != 1 || chosenSongs.indexOf(items[0].RandomId._) > -1)  {
+        if(!items || items.length != 1 || seenSongs.indexOf(items[0].RandomId._) > -1)  {
             // no random song found with this guid, try again
-            getSong(fn, chosenSongs);
+            getSong(seenSongs, fn);
         }
         else {
             fn({ 
@@ -44,23 +43,8 @@ export function getSong(fn: Function, chosenSongs?: any) {
     });
 }
 
-export function getSongAPI(req: any, res: any) {
-    getSong((obj: any, err: any) => {
-        if (err) {
-            res.send(err);
-            return;
-        }
-
-        res.setHeader('Content-Type', 'application/json'); 
-        res.json(obj);
-    }, null /*TODO: FIX EVENTUALLY*/);
-}
-
-export function postGameResults(req: any, res: any, next: any) {
-    let gameId = req.params.gameId ? req.params.gameId.toString() : "1";
-    let userId = req.params.userId ? req.params.userId.toString() : "Richard Hendricks";
+export function postGameResults(gameId: string, userId: string, results: Array<any>, fn: Function) {
     let sessionId = getSessionId();
-    let results = JSON.parse(req.params.results);
     let resultEntities: object[] = [];
     let entGen = azure.TableUtilities.entityGenerator;
 
@@ -70,11 +54,11 @@ export function postGameResults(req: any, res: any, next: any) {
                 let entity = {
                     PartitionKey: entGen.String(gameRecordsPartitionKey),
                     RowKey: entGen.String((Date.now() + i).toString()),
-                    game_id: entGen.String(gameId),
+                    gameId: entGen.String(gameId),
                     score: entGen.String(results[i].score.toString()),
-                    session_id: entGen.String(sessionId),
-                    song_id: entGen.String(results[i].song_id.toString()),
-                    user_id: entGen.String(userId),
+                    sessionId: entGen.String(sessionId),
+                    songId: entGen.String(results[i].songId.toString()),
+                    userId: entGen.String(userId),
                     dueDate: entGen.DateTime(new Date(Date.UTC(2015, 6, 20))),
                 };
 
@@ -85,20 +69,16 @@ export function postGameResults(req: any, res: any, next: any) {
 
     let msg;
     if (addResultsEntityToTable(resultEntities)) {
-        msg = 'successfully uploaded game records';
-        res.status(200);
+        fn(true);
     } else {
-        let msg = 'failed in uploading game records, try again';
-        res.status(500);
+        fn(false);
     }
-    console.log(msg);
-    res.send({message: msg});
 }
 
 export function getTopNPlayers(req: any, res: any, next: any) {
-    console.log(typeof req.params.game_id);
+    console.log(typeof req.params.gameId);
     var gameRecords = new azure.TableQuery()
-                .where('game_id eq ?', req.params.game_id);
+                .where('gameId eq ?', req.params.gameId);
     
     gameRecordsTable.find(gameRecords, function itemsFound(error: any, items: any) {
         if (error) {
@@ -127,13 +107,13 @@ function getTopPlayersAndScores(items: any): number[][] {
     var result: { [name: string]: any} = {}
     for (let i in items) {
         if (items.hasOwnProperty(i)) {
-            let session = items[i].session_id._;
+            let session = items[i].sessionId._;
             if (session in result) {
                 result[session]["score"] += parseInt(items[i].score._);
             } else {
                 result[session] = {
-                    "session_id": session,
-                    "user_id": items[i].user_id._,
+                    "sessionId": session,
+                    "userId": items[i].userId._,
                     "score": parseInt(items[i].score._)
                 }
             }
@@ -145,19 +125,19 @@ function getTopPlayersAndScores(items: any): number[][] {
     let userScores: { [name: number]: any} = {};
     for (let session in result) {
         if (result.hasOwnProperty(session)) {
-            let user_id = result[session]["user_id"];
-            if (userScores.hasOwnProperty(user_id)) {
-                userScores[user_id] = Math.max(userScores[user_id], result[session]["score"]);
+            let userId = result[session]["userId"];
+            if (userScores.hasOwnProperty(userId)) {
+                userScores[userId] = Math.max(userScores[userId], result[session]["score"]);
             } else {
-                userScores[user_id] = result[session]["score"];
+                userScores[userId] = result[session]["score"];
             }
         }
     }
 
     let userScoresArray: number[][] = [];
-    for (let user_id in userScores) {
-        if (userScores.hasOwnProperty(user_id)) {
-            userScoresArray.push([user_id, userScores[user_id]]);
+    for (let userId in userScores) {
+        if (userScores.hasOwnProperty(userId)) {
+            userScoresArray.push([userId, userScores[userId]]);
         }
     }
     
