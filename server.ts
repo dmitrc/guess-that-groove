@@ -28,7 +28,7 @@ export function getSong(fn: Function, chosenSongs: any) {
             return;
         }
 
-        if(!items || items.length != 1 || chosenSongs.indexOf(items[0]) > -1)  {
+        if(!items || items.length != 1 || chosenSongs.indexOf(items[0].RandomId._) > -1)  {
             // no random song found with this guid, try again
             getSong(fn, chosenSongs);
         }
