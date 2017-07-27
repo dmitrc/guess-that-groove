@@ -22,6 +22,12 @@ let roundDialog =
            c.inProgress = true;
         }
 
+        let seenSongs = c.results.map((i: any) => {
+            return i.songId;
+        });
+
+        console.log(`[LOG] Getting new song, except one of these ids: ${JSON.stringify(seenSongs)}`);
+
         server.getSong((obj: any, err: any) => {
             if (obj) {
                 c.currentSong = obj;
@@ -46,7 +52,7 @@ let roundDialog =
                 // Abandon all the hope
                 session.endConversation(msg);
             }
-        });
+        }, seenSongs);
     },
     (session: builder.Session, results: builder.IPromptTextResult) => {
         let c = session.conversationData;
@@ -58,7 +64,13 @@ let roundDialog =
 
         console.log(`[LOG] Guessed: ${results.response}, Actual: ${c.currentSong.artist} - ${c.currentSong.title}`);
 
-        c.score += (didGuessArtist && didGuessTitle) ? 3 : (didGuessArtist || didGuessTitle) ? 1 : 0;
+        let pts = (didGuessArtist && didGuessTitle) ? 3 : (didGuessArtist || didGuessTitle) ? 1 : 0;
+        c.score += pts;
+
+        c.results[c.round - 1] = {
+            songId: c.currentSong.songId,
+            score: pts
+        };
 
         let msg = new builder.Message(session)
             .text(util.formatCard(r.results.titleFn(c.round), r.results.descriptionFn(c.round, c.score, didGuessArtist, didGuessTitle)))
