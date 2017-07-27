@@ -19,7 +19,7 @@ export function getSong(seenSongs: Array<any>, fn: Function) {
     var query = new azure.TableQuery()
                 .select(['Artist', 'Decade', 'Title', 'Url', 'RandomId'])
                 .top(1)
-                .where('RandomId < ?guid?', uuid());
+                .where('RandomId > ?guid?', uuid());
     
     songTable.find(query, function itemsFound(error: any, items: any) {
         if (error) {
