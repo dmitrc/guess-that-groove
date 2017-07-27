@@ -162,11 +162,11 @@ function addResultsEntityToTable(resultEntities: object[]): boolean {
 }
 
 function getSessionId() {
-  let sessionId = "";
-  let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let sessionId = "";
+    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < 15; i++)
-    sessionId += letters.charAt(Math.floor(Math.random() * letters.length));
+    for (var i = 0; i < 15; i++)
+        sessionId += letters.charAt(Math.floor(Math.random() * letters.length));
 
-  return sessionId;
+    return sessionId;
 }
