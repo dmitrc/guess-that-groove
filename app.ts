@@ -10,6 +10,8 @@ import helpDialog from './dialogs/help';
 import aboutDialog from './dialogs/about';
 import feedbackDialog from './dialogs/feedback';
 
+import r from './resources/misc';
+import * as util from './util';
 import * as serverFunc from './server';
 import * as grooveApi from './groove';
 
@@ -27,38 +29,77 @@ var connector = new builder.ChatConnector({
 
 server.post('/api/messages', connector.listen());
 
-server.get('/api/song', serverFunc.getSong);
+server.get('/api/song', serverFunc.getSongAPI);
 
-server.post('/answer', serverFunc.giveAnswer);
+server.use(restify.bodyParser());
+server.post('/api/results', serverFunc.postGameResults);
 
-server.get('/leaderboard', serverFunc.getLeaderboard);
+server.get('/api/leaderboard/:game_id', serverFunc.getTopNPlayers);
 
 server.get('/api/searchByArtist/:keyword', grooveApi.searchTrackByArtist);
 
 var bot = new builder.UniversalBot(connector, (session) => {
-    //session.replaceDialog('HelpDialog', { isFallback: true });
-    session.replaceDialog('DebugDialog');
+    session.replaceDialog('GameDialog');
 });
 
 // var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 // bot.recognizer(recognizer);
 
+let cancelMsg = new builder.Message()
+    .text(util.formatCard(r.cancel.title, r.cancel.description))
+    .speak(r.cancel.speech)
+    .inputHint(builder.InputHint.ignoringInput);
+
+let confirmMsg = new builder.Message()
+    .text(util.formatCard(r.confirm.title, r.confirm.description))
+    .speak(r.confirm.speech)
+    .inputHint(builder.InputHint.expectingInput);
+
 bot.dialog('GameDialog', gameDialog)
-.triggerAction({
+.endConversationAction('endConversationAction', cancelMsg, {
     matches: [
-        /game/i
+        /quit/i, /* MIGHT CAUSE CONFLICTS WITH CORTANA'S INNER WORKINGS, NOT RECOMMENDED */
+        /cancel/i, /* MIGHT CAUSE CONFLICTS WITH CORTANA'S INNER WORKINGS, NOT RECOMMENDED */
+        /exit/i,
+        /abandon/i,
+        /(screw|fuck) this/i
+    ],
+    confirmPrompt: confirmMsg
+});
+
+let repeatMsg = new builder.Message()
+    .text(r.repeat.description)
+    .speak(r.repeat.speech)
+    .inputHint(builder.InputHint.ignoringInput);
+
+bot.dialog('RoundDialog', roundDialog)
+.reloadAction('reloadAction', repeatMsg, {
+    matches: [
+        /repeat/i, /* MIGHT CAUSE CONFLICTS WITH CORTANA'S INNER WORKINGS, NOT RECOMMENDED */
+        /excuse me/i,
+        /(try|play|say)+.*again/i,
+        /(try|play|say)+.*one more time/i
     ]
 });
 
-bot.dialog('RoundDialog', roundDialog);
-
-bot.dialog('HintDialog', hintDialog);
+bot.dialog('HintDialog', hintDialog)
+.triggerAction({
+    matches: [
+        /hint/i,
+        /clue/i
+    ],
+    onSelectAction: (session, args, next) => {
+        // Add the hint dialog to the dialog stack 
+        // (override the default behavior of replacing the stack)
+        let dialog = (args && args.action) || 'HintDialog';
+        session.beginDialog(dialog, args);
+    }
+});
 
 bot.dialog('HelpDialog', helpDialog)
 .triggerAction({
     matches: [
-        /help/i,
-        /commands/i
+        /what can i do/i
     ]
 });
 
@@ -66,23 +107,21 @@ bot.dialog('AboutDialog', aboutDialog)
 .triggerAction({
     matches: [
         /about this/i,
-        /author/i,
-        /contact/i,
-        /created/i
+        /who created/i
     ]
 });
 
 bot.dialog('FeedbackDialog', feedbackDialog)
 .triggerAction({
     matches: [
-        /feedback/i,
-        /review/i
+        /leave feedback/i,
+        /leave review/i
     ]
 });
 
 bot.dialog('DebugDialog', debugDialog)
 .triggerAction({
     matches: [
-        /debug/i
+        /follow the white rabbit/i
     ]
 });

@@ -2,56 +2,91 @@ import * as builder from 'botbuilder';
 import * as emoji from 'node-emoji';
 
 import * as util from '../util';
+import * as server from '../server';
 import ssml from '../ssml';
 
-let roundDialog = [
-        (session: builder.Session, args: any) => {
-            if (args) {
-                session.conversationData.step = args.step || 1;
-                session.conversationData.score = args.score || 0;
-                session.conversationData.total = args.total || 5;
-            }
+import r from '../resources/round';
 
-            let title = `Round ${session.conversationData.step}`;
-            let description = 'Please listen to this round\'s song... What is your guess?';
+let roundDialog = 
+[
+    (session: builder.Session, args: any) => {
+        let c = session.conversationData;
 
-            let msg = new builder.Message(session)
-                .text(util.formatCard(title, description))
-                //.speak(speech.ssml())
-                .inputHint(builder.InputHint.expectingInput);
+        if (!c.inProgress) {
+           c.round = 1;
+           c.score = 0;
+           c.total = 4;
+           c.results = [];
+           c.currentSong = null;
 
-            builder.Prompts.text(session, msg);
-        },
-        (session: builder.Session, results: builder.IPromptTextResult) => {
-            session.conversationData.score += 1;
+           c.inProgress = true;
+        }
 
-            let title = `Round ${session.conversationData.step} results`;
-            let description = `Your answer was ${results.response}. Your score is ${session.conversationData.score}`;
+        let seenSongs = c.results.map((i: any) => {
+            return i.songId;
+        });
 
-            let msg = new builder.Message(session)
-                .text(util.formatCard(title, description))
-                //.speak(speech.ssml())
-                .inputHint(builder.InputHint.expectingInput);
+        console.log(`[LOG] Getting new song, except one of these ids: ${JSON.stringify(seenSongs)}`);
 
-            session.send(msg);
-            
-            if (session.conversationData.round < session.conversationData.total) {
-                session.replaceDialog('RoundDialog', {
-                    step: ++session.conversationData.step,
-                    score: ++session.conversationData.score,
-                    total: session.conversationData.total
+        server.getSong((obj: any, err: any) => {
+            if (obj) {
+                c.currentSong = obj;
+                console.log(`[LOG] Got song from the backend: ${JSON.stringify(obj)}`);
+
+                let msg = new builder.Message(session)
+                    .text(util.formatCard(r.intro.titleFn(c.round), r.intro.descriptionFn(c.round)))
+                    .speak(r.intro.speechFn(c.round, obj.url))
+                    .inputHint(builder.InputHint.expectingInput);
+
+                builder.Prompts.text(session, msg, {
+                    retryPrompt: msg,
+                    retrySpeak: r.intro.speechFn(c.round, obj.url)
                 });
             }
             else {
-                session.endDialogWithResult({
-                    response: {
-                        step: session.conversationData.step,
-                        answer: results.response,
-                        score: session.conversationData.score 
-                    }
-                });
+                let msg = new builder.Message(session)
+                    .text(util.formatCard(r.error.title, r.error.description))
+                    .speak(r.error.speech)
+                    .inputHint(builder.InputHint.acceptingInput);
+
+                // Abandon all the hope
+                session.endConversation(msg);
             }
+        }, seenSongs);
+    },
+    (session: builder.Session, results: builder.IPromptTextResult) => {
+        let c = session.conversationData;
+        let a = util.trim(results.response || "");
+
+        // THIS NEEDS SOME FINETUNING!
+        let didGuessArtist = a.indexOf(util.trim(c.currentSong.artist)) > -1;
+        let didGuessTitle = a.indexOf(util.trim(c.currentSong.title)) > -1;
+
+        console.log(`[LOG] Guessed: ${results.response}, Actual: ${c.currentSong.artist} - ${c.currentSong.title}`);
+
+        let pts = (didGuessArtist && didGuessTitle) ? 3 : (didGuessArtist || didGuessTitle) ? 1 : 0;
+        c.score += pts;
+
+        c.results[c.round - 1] = {
+            songId: c.currentSong.songId,
+            score: pts
+        };
+
+        let msg = new builder.Message(session)
+            .text(util.formatCard(r.results.titleFn(c.round), r.results.descriptionFn(c.round, c.score, didGuessArtist, didGuessTitle)))
+            .speak(r.results.speechFn(c.round, didGuessArtist, didGuessTitle))
+            .inputHint(builder.InputHint.ignoringInput);
+
+        session.send(msg);
+        
+        if (c.round < c.total) {
+            c.round += 1;
+            session.replaceDialog('RoundDialog');
         }
-    ];
+        else {
+            session.endDialog();
+        }
+    }
+];
 
 export default roundDialog;

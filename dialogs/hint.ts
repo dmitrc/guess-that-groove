@@ -4,14 +4,14 @@ import * as emoji from 'node-emoji';
 import * as util from '../util';
 import ssml from '../ssml';
 
-let hintDialog = (session: builder.Session, args: any) => {
-    let title = `Here's a hint:`;
-    let description = 'The __ of this song is __.';
+import r from '../resources/round';
 
+let hintDialog = (session: builder.Session, args: any) => {
+    let artist = '%ArtistName%';
     let msg = new builder.Message(session)
-        .text(util.formatCard(title, description))
-        //.speak(speech.ssml())
-        .inputHint(builder.InputHint.expectingInput);
+        .text(util.formatCard(r.hint.title, r.hint.descriptionFn(artist)))
+        .speak(r.hint.speechFn(artist))
+        .inputHint(builder.InputHint.ignoringInput);
 
     session.send(msg).endDialog();
 };
