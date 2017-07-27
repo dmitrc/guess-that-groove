@@ -51,7 +51,7 @@ let gameDialog =
 
         let user = null;
         if (demoMode && results.response) {
-            user = results.response;
+            user = util.trim(results.response);
         }
 
         let title = user ? r.outro.titleFn(user) : r.outro.title;
@@ -64,7 +64,7 @@ let gameDialog =
         // Send the results!
         let gameId = "1";
         console.log(`[LOG] Submitting results with gameId=${gameId}, userId=${user || "Anonymous"}, results=${JSON.stringify(c.results)}`);
-        
+
         server.postGameResults(gameId, user || "Anonymous", c.results, (isSuccess: boolean) => {
             console.log(`[LOG] Submitting game results was ${isSuccess ? "" : "not"} successful.`);
         });
