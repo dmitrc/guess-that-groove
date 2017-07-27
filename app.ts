@@ -11,6 +11,7 @@ import aboutDialog from './dialogs/about';
 import feedbackDialog from './dialogs/feedback';
 
 import * as serverFunc from './server';
+import * as grooveApi from './groove';
 
 dotenv.load();
 
@@ -31,6 +32,8 @@ server.get('/api/song', serverFunc.getSong);
 server.post('/answer', serverFunc.giveAnswer);
 
 server.get('/leaderboard', serverFunc.getLeaderboard);
+
+server.get('/api/searchByArtist/:keyword', grooveApi.searchTrackByArtist);
 
 var bot = new builder.UniversalBot(connector, (session) => {
     //session.replaceDialog('HelpDialog', { isFallback: true });
